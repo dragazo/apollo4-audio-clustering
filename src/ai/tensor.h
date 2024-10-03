@@ -2,19 +2,9 @@
 #define A3EM_AI_TENSOR_H
 
 #include <type_traits>
+#include <stdexcept>
 
-#include "stdint.h"
-
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-
-typedef int8_t i8;
-typedef int16_t i16;
-typedef int32_t i32;
-
-typedef float f32;
-typedef double f64;
+#include "./types.h"
 
 template<typename T, u32 D, std::enable_if_t<(D > 0), int> = 0>
 class Tensor {
@@ -73,6 +63,7 @@ public:
         u32 p = 0;
         u32 s = 1;
         for (u32 i = D; i-- > 0; ) {
+            if (pos[i] >= dims[i]) throw std::runtime_error("index out of bounds");
             p += pos[i] * s;
             s *= dims[i];
         }

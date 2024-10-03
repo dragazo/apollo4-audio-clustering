@@ -1,4 +1,4 @@
 test: ALWAYS
-	g++ test.cpp util.cpp -o test && ./test
+	g++ test.cpp -o test && ./test
 
 ALWAYS:;

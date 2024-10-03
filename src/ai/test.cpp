@@ -11,7 +11,7 @@ void deleter(T *v) { delete[] v; }
 int main() {
     std::cout << "starting tests...\n";
 
-    { // tensor
+    try { // tensor
         Tensor<f32, 1> vec{new f32[52], deleter, 52};
         Tensor<f64, 2> tab{new f64[30], deleter, 6, 5};
 
@@ -31,24 +31,90 @@ int main() {
 
         f32 data[16];
         Tensor<f32, 3> ref{data, nullptr, 2, 4, 4};
+    } catch (const std::exception &x) {
+        std::cout << "!!!! tensor error: " << x.what() << '\n';
+        throw x;
     }
 
-    { // rfft
-        f32 r_sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
-        Tensor<f32, 1> r_sig { r_sig_raw, nullptr, sizeof(r_sig_raw) / sizeof(*r_sig_raw) };
-        Tensor<c32, 1> r_sig_rfft = rfft(r_sig);
-        assert(r_sig_rfft.dim<0>() == 6);
-        for (u32 i = 0; i < r_sig_rfft.dim<0>(); ++i) {
-            std::cout << r_sig_rfft(i).real << " + " << r_sig_rfft(i).imag << "i\n";
-        }
-
-        assert(std::abs(r_sig_rfft(0).real - 35.0000000000000000) < 0.01 && std::abs(r_sig_rfft(0).imag - 0.0000000000000000) < 0.01);
-        assert(std::abs(r_sig_rfft(1).real - -7.0000000000000000) < 0.01 && std::abs(r_sig_rfft(1).imag - 1.4530850560107220) < 0.01);
-        assert(std::abs(r_sig_rfft(2).real - -4.4721359549995805) < 0.01 && std::abs(r_sig_rfft(2).imag - 5.4288245463451460) < 0.01);
-        assert(std::abs(r_sig_rfft(3).real - -7.0000000000000000) < 0.01 && std::abs(r_sig_rfft(3).imag - -6.155367074350506) < 0.01);
-        assert(std::abs(r_sig_rfft(4).real - 4.47213595499958000) < 0.01 && std::abs(r_sig_rfft(4).imag - -4.530768593185974) < 0.01);
-        assert(std::abs(r_sig_rfft(5).real - 3.00000000000000000) < 0.01 && std::abs(r_sig_rfft(5).imag - 0.0000000000000000) < 0.01);
+    try { // complex
+        c32 a = c32 {5, 7} * c32 {-4, 1};
+        assert(a.real == -27 && a.imag == -23);
+        c32 b = c32 {6, 2} + c32 { 4, -8 };
+        assert(b.real == 10 && b.imag == -6);
+        c32 c = c32 {6, 2} * 2.0f;
+        assert(c.real == 12 && c.imag == 4);
+        c32 d = 3.0f * c32 {4, -2};
+        assert(d.real == 12 && d.imag == -6);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! complex error: " << x.what() << '\n';
+        throw x;
     }
 
-    std::cout << "passed all tests!\n";
+    try { // fft
+        c32 sig_raw[] = { {1, 2}, {3, -2}, {-2, 0}, {1, 11}, {8, -5}, {4, 0}, {0, -3}, {0, 0}, {1, 4}, {-5, 3} };
+        Tensor<c32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
+        assert(sig.dim<0>() == 10);
+
+        Tensor<c32, 1> sig_fft = fft(sig);
+        assert(sig_fft.dim<0>() == 10);
+        assert(std::abs(sig_fft(0).real - 11.00000) < 0.01 && std::abs(sig_fft(0).imag - 10.000000) < 0.01);
+        assert(std::abs(sig_fft(1).real - -9.16531) < 0.01 && std::abs(sig_fft(1).imag - -0.384416) < 0.01);
+        assert(std::abs(sig_fft(2).real - -4.81585) < 0.01 && std::abs(sig_fft(2).imag - -9.947230) < 0.01);
+        assert(std::abs(sig_fft(3).real - -9.06369) < 0.01 && std::abs(sig_fft(3).imag - -11.51050) < 0.01);
+        assert(std::abs(sig_fft(4).real - 12.64840) < 0.01 && std::abs(sig_fft(4).imag - 8.4941500) < 0.01);
+        assert(std::abs(sig_fft(5).real - 4.999980) < 0.01 && std::abs(sig_fft(5).imag - -14.00000) < 0.01);
+        assert(std::abs(sig_fft(6).real - -12.3566) < 0.01 && std::abs(sig_fft(6).imag - 16.102600) < 0.01);
+        assert(std::abs(sig_fft(7).real - 12.48010) < 0.01 && std::abs(sig_fft(7).imag - 21.274400) < 0.01);
+        assert(std::abs(sig_fft(8).real - 18.52400) < 0.01 && std::abs(sig_fft(8).imag - -14.64950) < 0.01);
+        assert(std::abs(sig_fft(9).real - -14.2511) < 0.01 && std::abs(sig_fft(9).imag - 14.620500) < 0.01);
+
+        Tensor<c32, 1> sig_fft_ifft = ifft(sig_fft);
+        assert(sig_fft_ifft.dim<0>() == 10);
+        assert(std::abs(sig_fft_ifft(0).real - 1.00) < 0.01 && std::abs(sig_fft_ifft(0).imag - 2.00) < 0.01);
+        assert(std::abs(sig_fft_ifft(1).real - 3.00) < 0.01 && std::abs(sig_fft_ifft(1).imag - -2.0) < 0.01);
+        assert(std::abs(sig_fft_ifft(2).real - -2.0) < 0.01 && std::abs(sig_fft_ifft(2).imag - 0.00) < 0.01);
+        assert(std::abs(sig_fft_ifft(3).real - 1.00) < 0.01 && std::abs(sig_fft_ifft(3).imag - 11.0) < 0.01);
+        assert(std::abs(sig_fft_ifft(4).real - 8.00) < 0.01 && std::abs(sig_fft_ifft(4).imag - -5.0) < 0.01);
+        assert(std::abs(sig_fft_ifft(5).real - 4.00) < 0.01 && std::abs(sig_fft_ifft(5).imag - 0.00) < 0.01);
+        assert(std::abs(sig_fft_ifft(6).real - 0.00) < 0.01 && std::abs(sig_fft_ifft(6).imag - -3.0) < 0.01);
+        assert(std::abs(sig_fft_ifft(7).real - 0.00) < 0.01 && std::abs(sig_fft_ifft(7).imag - 0.00) < 0.01);
+        assert(std::abs(sig_fft_ifft(8).real - 1.00) < 0.01 && std::abs(sig_fft_ifft(8).imag - 4.00) < 0.01);
+        assert(std::abs(sig_fft_ifft(9).real - -5.0) < 0.01 && std::abs(sig_fft_ifft(9).imag - 3.00) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! fft error: " << x.what() << '\n';
+        throw x;
+    }
+
+    try { // rfft
+        f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
+        Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
+        assert(sig.dim<0>() == 10);
+
+        Tensor<c32, 1> sig_rfft = rfft(sig);
+        assert(sig_rfft.dim<0>() == 6);
+        assert(std::abs(sig_rfft(0).real - 35.0000000000000000) < 0.01 && std::abs(sig_rfft(0).imag - 0.0000000000000000) < 0.01);
+        assert(std::abs(sig_rfft(1).real - -7.0000000000000000) < 0.01 && std::abs(sig_rfft(1).imag - 1.4530850560107220) < 0.01);
+        assert(std::abs(sig_rfft(2).real - -4.4721359549995805) < 0.01 && std::abs(sig_rfft(2).imag - 5.4288245463451460) < 0.01);
+        assert(std::abs(sig_rfft(3).real - -7.0000000000000000) < 0.01 && std::abs(sig_rfft(3).imag - -6.155367074350506) < 0.01);
+        assert(std::abs(sig_rfft(4).real - 4.47213595499958000) < 0.01 && std::abs(sig_rfft(4).imag - -4.530768593185974) < 0.01);
+        assert(std::abs(sig_rfft(5).real - 3.00000000000000000) < 0.01 && std::abs(sig_rfft(5).imag - 0.0000000000000000) < 0.01);
+
+        Tensor<c32, 1> sig_rfft_irfft = irfft(sig_rfft);
+        assert(sig_rfft_irfft.dim<0>() == 10);
+        assert(std::abs(sig_rfft_irfft(0).real - 1) < 0.01 && std::abs(sig_rfft_irfft(0).imag - 0) < 0.01);
+        assert(std::abs(sig_rfft_irfft(1).real - 2) < 0.01 && std::abs(sig_rfft_irfft(1).imag - 0) < 0.01);
+        assert(std::abs(sig_rfft_irfft(2).real - 3) < 0.01 && std::abs(sig_rfft_irfft(2).imag - 0) < 0.01);
+        assert(std::abs(sig_rfft_irfft(3).real - 4) < 0.01 && std::abs(sig_rfft_irfft(3).imag - 0) < 0.01);
+        assert(std::abs(sig_rfft_irfft(4).real - 5) < 0.01 && std::abs(sig_rfft_irfft(4).imag - 0) < 0.01);
+        assert(std::abs(sig_rfft_irfft(5).real - 6) < 0.01 && std::abs(sig_rfft_irfft(5).imag - 0) < 0.01);
+        assert(std::abs(sig_rfft_irfft(6).real - 2) < 0.01 && std::abs(sig_rfft_irfft(6).imag - 0) < 0.01);
+        assert(std::abs(sig_rfft_irfft(7).real - 3) < 0.01 && std::abs(sig_rfft_irfft(7).imag - 0) < 0.01);
+        assert(std::abs(sig_rfft_irfft(8).real - 8) < 0.01 && std::abs(sig_rfft_irfft(8).imag - 0) < 0.01);
+        assert(std::abs(sig_rfft_irfft(9).real - 1) < 0.01 && std::abs(sig_rfft_irfft(9).imag - 0) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! rfft error: " << x.what() << '\n';
+        throw x;
+    }
+
+    std::cout << "passed all tests! (no output means good)\n";
 }
