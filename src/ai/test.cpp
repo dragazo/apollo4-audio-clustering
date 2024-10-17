@@ -191,5 +191,26 @@ int main() {
         std::cout << "!!!! overlapping_chunks error: " << x.what() << '\n';
     }
 
+    try { // hann_window
+        f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
+        Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
+
+        hann_window(sig);
+
+        assert(sig.dim<0>() == 10);
+        assert(std::abs(sig(0) - 0.000) < 0.01);
+        assert(std::abs(sig(1) - 0.095) < 0.01);
+        assert(std::abs(sig(2) - 0.345) < 0.01);
+        assert(std::abs(sig(3) - 0.655) < 0.01);
+        assert(std::abs(sig(4) - 0.905) < 0.01);
+        assert(std::abs(sig(5) - 1.000) < 0.01);
+        assert(std::abs(sig(6) - 0.905) < 0.01);
+        assert(std::abs(sig(7) - 0.655) < 0.01);
+        assert(std::abs(sig(8) - 0.345) < 0.01);
+        assert(std::abs(sig(9) - 0.095) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! hann_window error: " << x.what() << '\n';
+    }
+
     std::cout << "passed all tests! (no output means good)\n";
 }

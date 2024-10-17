@@ -50,6 +50,7 @@
         "typeinfo": "cpp"
     },
     "cSpell.words": [
+        "hann",
         "ifft",
         "irfft",
         "rfft"
