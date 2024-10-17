@@ -52,6 +52,12 @@ public:
         return dims[i];
     }
 
+    u32 size() const {
+        u32 res = 1;
+        for (u32 i = 0; i < D; ++i) res *= dims[i];
+        return res;
+    }
+
     template<typename ...Args, std::enable_if_t<sizeof...(Args) == D, int> = 0>
     T &operator()(Args ...pos) {
         return const_cast<T&>(const_cast<const Tensor*>(this)->operator()(pos...));
@@ -68,6 +74,11 @@ public:
             s *= dims[i];
         }
         return data[p];
+    }
+
+    Tensor &operator/=(T v) & {
+        for (u32 i = size(); i-- > 0; ) data[i] /= v;
+        return *this;
     }
 };
 

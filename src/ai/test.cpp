@@ -116,5 +116,80 @@ int main() {
         throw x;
     }
 
+    try { // low_pass_filter
+        f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
+        Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
+        assert(sig.dim<0>() == 10);
+
+        low_pass_filter(sig, 6.0f);
+
+        assert(sig.dim<0>() == 10);
+        assert(std::abs(sig(0) - 1) < 0.01);
+        assert(std::abs(sig(1) - 2) < 0.01);
+        assert(std::abs(sig(2) - 3) < 0.01);
+        assert(std::abs(sig(3) - 4) < 0.01);
+        assert(std::abs(sig(4) - 5) < 0.01);
+        assert(std::abs(sig(5) - 6) < 0.01);
+        assert(std::abs(sig(6) - 2) < 0.01);
+        assert(std::abs(sig(7) - 3) < 0.01);
+        assert(std::abs(sig(8) - 8) < 0.01);
+        assert(std::abs(sig(9) - 1) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! low_pass_filter error: " << x.what() << '\n';
+    }
+
+    try { // normalize_audio
+        f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
+        Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
+
+        normalize_audio(sig);
+
+        assert(sig.dim<0>() == 10);
+        assert(std::abs(sig(0) - 0.125) < 0.01);
+        assert(std::abs(sig(1) - 0.250) < 0.01);
+        assert(std::abs(sig(2) - 0.375) < 0.01);
+        assert(std::abs(sig(3) - 0.500) < 0.01);
+        assert(std::abs(sig(4) - 0.625) < 0.01);
+        assert(std::abs(sig(5) - 0.750) < 0.01);
+        assert(std::abs(sig(6) - 0.250) < 0.01);
+        assert(std::abs(sig(7) - 0.375) < 0.01);
+        assert(std::abs(sig(8) - 1.000) < 0.01);
+        assert(std::abs(sig(9) - 0.125) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! normalize_audio error: " << x.what() << '\n';
+    }
+
+    try { // overlapping_chunks
+        f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
+        Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
+
+        auto chunks = overlapping_chunks(sig, 4);
+
+        assert(chunks.size() == 4);
+        assert(chunks[0].dim<0>() == 4);
+        assert(std::abs(chunks[0](0) - 1) < 0.01);
+        assert(std::abs(chunks[0](1) - 2) < 0.01);
+        assert(std::abs(chunks[0](2) - 3) < 0.01);
+        assert(std::abs(chunks[0](3) - 4) < 0.01);
+        assert(chunks[1].dim<0>() == 4);
+        assert(std::abs(chunks[1](0) - 3) < 0.01);
+        assert(std::abs(chunks[1](1) - 4) < 0.01);
+        assert(std::abs(chunks[1](2) - 5) < 0.01);
+        assert(std::abs(chunks[1](3) - 6) < 0.01);
+        assert(chunks[2].dim<0>() == 4);
+        assert(std::abs(chunks[2](0) - 5) < 0.01);
+        assert(std::abs(chunks[2](1) - 6) < 0.01);
+        assert(std::abs(chunks[2](2) - 2) < 0.01);
+        assert(std::abs(chunks[2](3) - 3) < 0.01);
+        assert(chunks[3].dim<0>() == 4);
+        assert(std::abs(chunks[3](0) - 2) < 0.01);
+        assert(std::abs(chunks[3](1) - 3) < 0.01);
+        assert(std::abs(chunks[3](2) - 8) < 0.01);
+        assert(std::abs(chunks[3](3) - 1) < 0.01);
+
+    } catch (const std::exception &x) {
+        std::cout << "!!!! overlapping_chunks error: " << x.what() << '\n';
+    }
+
     std::cout << "passed all tests! (no output means good)\n";
 }

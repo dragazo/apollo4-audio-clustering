@@ -1,6 +1,8 @@
 #ifndef A3EM_AI_UTIL_H
 #define A3EM_AI_UTIL_H
 
+#include <vector>
+
 #include "./tensor.h"
 
 #define PI 3.14159265358979323846f
@@ -27,6 +29,32 @@ template<typename T> Tensor<complicate_t<T>, 1> irfft(const Tensor<T, 1> &x) {
     for (u32 i = 0; i < x.template dim<0>(); ++i) extended(i) = x(i);
     for (u32 i = x.template dim<0>(); i < extended.template dim<0>(); ++i) extended(i) = conj(x(extended.template dim<0>() - i));
     return ifft(extended);
+}
+
+template<typename T, std::enable_if_t<std::is_same<T, simplify_t<T>>::value, int> = 0>
+void low_pass_filter(Tensor<T, 1> &audio, T sample_rate, T band_limit = 0) {
+    if (band_limit == 0) band_limit = sample_rate / 2;
+    u32 cutoff_index = (u32)std::round(band_limit * audio.template dim<0>() / sample_rate);
+    auto F = rfft(audio);
+    for (u32 i = cutoff_index + 1; i < audio.template dim<0>(); ++i) audio(i) = 0;
+    auto f = irfft(F);
+    for (u32 i = 0; i < audio.template dim<0>(); ++i) audio(i) = f(i).real;
+}
+
+template<typename T, std::enable_if_t<std::is_same<T, simplify_t<T>>::value, int> = 0>
+void normalize_audio(Tensor<T, 1> &audio) {
+    T s = 0;
+    for (u32 i = 0; i < audio.template dim<0>(); ++i) s = std::max(s, std::abs(audio(i)));
+    if (s != 0) audio /= s;
+}
+
+template<typename T>
+std::vector<Tensor<T, 1>> overlapping_chunks(Tensor<T, 1> &audio, u32 size) {
+    std::vector<Tensor<T, 1>> res;
+    for (u32 i = 0; i * (size / 2) + size <= audio.template dim<0>(); ++i) {
+        res.emplace_back(&audio(i * (size / 2)), nullptr, +size);
+    }
+    return res;
 }
 
 #endif
