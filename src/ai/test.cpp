@@ -191,25 +191,41 @@ int main() {
         std::cout << "!!!! overlapping_chunks error: " << x.what() << '\n';
     }
 
-    try { // hann_window
-        f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
+    try { // mul_hann_window
+        f32 sig_raw[] = {1, 1, 1, 1, 2, 1, 1, 1, 1, 3};
         Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
 
-        hann_window(sig);
+        mul_hann_window(sig);
 
         assert(sig.dim<0>() == 10);
         assert(std::abs(sig(0) - 0.000) < 0.01);
         assert(std::abs(sig(1) - 0.095) < 0.01);
         assert(std::abs(sig(2) - 0.345) < 0.01);
         assert(std::abs(sig(3) - 0.655) < 0.01);
-        assert(std::abs(sig(4) - 0.905) < 0.01);
+        assert(std::abs(sig(4) - 1.810) < 0.01);
         assert(std::abs(sig(5) - 1.000) < 0.01);
         assert(std::abs(sig(6) - 0.905) < 0.01);
         assert(std::abs(sig(7) - 0.655) < 0.01);
         assert(std::abs(sig(8) - 0.345) < 0.01);
-        assert(std::abs(sig(9) - 0.095) < 0.01);
+        assert(std::abs(sig(9) - 0.285) < 0.01);
     } catch (const std::exception &x) {
-        std::cout << "!!!! hann_window error: " << x.what() << '\n';
+        std::cout << "!!!! mul_hann_window error: " << x.what() << '\n';
+    }
+
+    try { // spectrogram
+        f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
+        Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
+
+        Tensor<Complex<f32>, 2> spec = spectrogram(sig, 6, 12.0f);
+        assert(spec.dim<0>() == 2 && spec.dim<1>() == 3);
+        assert(std::abs(spec(0, 0).real -  1.5000) < 0.01 && std::abs(spec(0, 0).imag -  0.0000) < 0.01);
+        assert(std::abs(spec(0, 1).real - -0.7500) < 0.01 && std::abs(spec(0, 1).imag -  0.2706) < 0.01);
+        assert(std::abs(spec(0, 2).real -  0.0000) < 0.01 && std::abs(spec(0, 2).imag - -0.0541) < 0.01);
+        assert(std::abs(spec(1, 0).real -  1.5000) < 0.01 && std::abs(spec(1, 0).imag -  0.0000) < 0.01);
+        assert(std::abs(spec(1, 1).real - -0.4687) < 0.01 && std::abs(spec(1, 1).imag - -0.1623) < 0.01);
+        assert(std::abs(spec(1, 2).real - -0.3750) < 0.01 && std::abs(spec(1, 2).imag -  0.3248) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! spectrogram error: " << x.what() << '\n';
     }
 
     std::cout << "passed all tests! (no output means good)\n";

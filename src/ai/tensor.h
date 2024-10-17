@@ -47,6 +47,18 @@ public:
         return *this;
     }
 
+    Tensor into_owned() && {
+        Tensor res { static_cast<Tensor&&>(*this) };
+        if (!res.deleter && res.data) {
+            u32 s = res.size();
+            T *new_data = new T[s];
+            for (u32 i = 0; i < s; ++i) new_data[i] = res.data[i];
+            res.data = new_data;
+            res.deleter = [](auto *v) { delete[] v; };
+        }
+        return res;
+    }
+
     template<u32 i, std::enable_if_t<(i < D), int> = 0>
     u32 dim() const {
         return dims[i];

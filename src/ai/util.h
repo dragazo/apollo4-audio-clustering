@@ -58,11 +58,30 @@ std::vector<Tensor<T, 1>> overlapping_chunks(Tensor<T, 1> &audio, u32 size) {
 }
 
 template<typename T>
-void hann_window(Tensor<T, 1> &x) {
+void mul_hann_window(Tensor<T, 1> &x) {
     for (u32 i = 0; i < x.template dim<0>(); ++i) {
         T t = std::cos((T)PI * ((T)i - (T)x.template dim<0>() / 2) / (T)x.template dim<0>());
-        x(i) = t * t;
+        x(i) *= t * t;
     }
+}
+
+template<typename T, std::enable_if_t<std::is_same<T, simplify_t<T>>::value, int> = 0>
+Tensor<complicate_t<T>, 2> spectrogram(Tensor<T, 1> &audio, u32 fft_size, T sample_rate) {
+    low_pass_filter(audio, sample_rate);
+    normalize_audio(audio);
+
+    std::vector<Tensor<T, 1>> chunks = overlapping_chunks(audio, fft_size);
+    for (Tensor<T, 1> &x : chunks) {
+        x = static_cast<Tensor<T, 1>&&>(x).into_owned();
+        mul_hann_window(x);
+    }
+
+    Tensor<complicate_t<T>, 2> res { new complicate_t<T>[chunks.size() * (fft_size / 2)], [](auto *v) { delete[] v; }, chunks.size(), fft_size / 2 };
+    for (u32 i = 0; i < chunks.size(); ++i) {
+        Tensor<complicate_t<T>, 1> F = fft(chunks[i]);
+        for (u32 j = 0; j < fft_size / 2; ++j) res(i, j) = F(j);
+    }
+    return res;
 }
 
 #endif
