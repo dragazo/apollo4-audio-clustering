@@ -228,5 +228,15 @@ int main() {
         std::cout << "!!!! spectrogram error: " << x.what() << '\n';
     }
 
+    try { // freq_to_mel / mel_to_freq
+        assert(std::abs(freq_to_mel(921.0f) - 946.3624) < 0.01);
+        assert(std::abs(freq_to_mel(391.0f) - 500.1284) < 0.01);
+
+        assert(std::abs(mel_to_freq(129.0f) - 84.8899) < 0.01);
+        assert(std::abs(mel_to_freq(1236.0f) - 1396.0235) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! freq_to_mel / mel_to_freq error: " << x.what() << '\n';
+    }
+
     std::cout << "passed all tests! (no output means good)\n";
 }

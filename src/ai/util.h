@@ -84,4 +84,12 @@ Tensor<complicate_t<T>, 2> spectrogram(Tensor<T, 1> &audio, u32 fft_size, T samp
     return res;
 }
 
+template<typename T, std::enable_if_t<std::is_same<T, simplify_t<T>>::value, int> = 0> T freq_to_mel(T f) {
+    return 1127 * std::log(1 + f / 700);
+}
+template<typename T, std::enable_if_t<std::is_same<T, simplify_t<T>>::value, int> = 0> T mel_to_freq(T m) {
+    return 700 * (std::exp(m / 1127) - 1);
+}
+
+
 #endif
