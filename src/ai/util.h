@@ -91,5 +91,18 @@ template<typename T, std::enable_if_t<std::is_same<T, simplify_t<T>>::value, int
     return 700 * (std::exp(m / 1127) - 1);
 }
 
+template<typename T, std::enable_if_t<std::is_same<T, simplify_t<T>>::value, int> = 0>
+Tensor<T, 2> dct(u32 in_filters, u32 out_filters) {
+    T t1 = 1 / std::sqrt((T)in_filters);
+    T t2 = std::sqrt(2 / (T)in_filters);
+    T t3 = (T)PI / (2 * (T)in_filters);
+
+    Tensor<T, 2> res { new T[in_filters * out_filters], [](auto *v) { delete[] v; }, out_filters, in_filters };
+    for (u32 j = 0; j < in_filters; ++j) res(0, j) = t1;
+    for (u32 i = 1; i < out_filters; ++i) {
+        for (u32 j = 0; j < in_filters; ++j) res(i, j) = std::cos(i * (1 + 2 * j) * t3) * t2;
+    }
+    return res;
+}
 
 #endif

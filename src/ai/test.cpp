@@ -238,5 +238,36 @@ int main() {
         std::cout << "!!!! freq_to_mel / mel_to_freq error: " << x.what() << '\n';
     }
 
+    try { // dct
+        Tensor<f32, 2> t = dct<f32>(4, 6);
+        assert(t.dim<0>() == 6 && t.dim<1>() == 4);
+        assert(std::abs(t(0, 0) -  0.5) < 0.01);
+        assert(std::abs(t(0, 1) -  0.5) < 0.01);
+        assert(std::abs(t(0, 2) -  0.5) < 0.01);
+        assert(std::abs(t(0, 3) -  0.5) < 0.01);
+        assert(std::abs(t(1, 0) -  0.6533) < 0.01);
+        assert(std::abs(t(1, 1) -  0.2706) < 0.01);
+        assert(std::abs(t(1, 2) - -0.2706) < 0.01);
+        assert(std::abs(t(1, 3) - -0.6533) < 0.01);
+        assert(std::abs(t(2, 0) -  0.5) < 0.01);
+        assert(std::abs(t(2, 1) - -0.5) < 0.01);
+        assert(std::abs(t(2, 2) - -0.5) < 0.01);
+        assert(std::abs(t(2, 3) -  0.5) < 0.01);
+        assert(std::abs(t(3, 0) -  0.2706) < 0.01);
+        assert(std::abs(t(3, 1) - -0.6533) < 0.01);
+        assert(std::abs(t(3, 2) -  0.6533) < 0.01);
+        assert(std::abs(t(3, 3) - -0.2706) < 0.01);
+        assert(std::abs(t(4, 0) -  0) < 0.01);
+        assert(std::abs(t(4, 1) -  0) < 0.01);
+        assert(std::abs(t(4, 2) -  0) < 0.01);
+        assert(std::abs(t(4, 3) -  0) < 0.01);
+        assert(std::abs(t(5, 0) - -0.2706) < 0.01);
+        assert(std::abs(t(5, 1) -  0.6533) < 0.01);
+        assert(std::abs(t(5, 2) - -0.6533) < 0.01);
+        assert(std::abs(t(5, 3) -  0.2706) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! dct error: " << x.what() << '\n';
+    }
+
     std::cout << "passed all tests! (no output means good)\n";
 }
