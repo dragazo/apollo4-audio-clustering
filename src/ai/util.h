@@ -178,4 +178,16 @@ Tensor<T, 2> mfcc_spectrogram(Tensor<T, 1> &signal, u32 fft_size, T sample_rate,
     return matmul(dct<T>(mel_filters, dct_filters), filtered);
 }
 
+template<typename T, std::enable_if_t<std::is_same<T, simplify_t<T>>::value, int> = 0>
+Tensor<T, 2> mfcc_spectrogram_for_learning(Tensor<T, 1> &signal, T sample_rate) {
+    u32 fft_size = (u32)(i32)((T)30 / (T)1000 * sample_rate);
+    if ((i32)fft_size <= 0) throw std::runtime_error("mfcc_spectrogram_for_learning: input too small!");
+    Tensor<T, 2> s = mfcc_spectrogram(signal, fft_size, sample_rate, 65, 65);
+    s.maximum(0);
+    s.minimum(s.mean() + 1 * s.std());
+    T m = s.max();
+    if (m > 0) s /= m;
+    return s;
+}
+
 #endif

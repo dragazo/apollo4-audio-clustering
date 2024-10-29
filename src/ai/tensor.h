@@ -88,6 +88,54 @@ public:
         return data[p];
     }
 
+    Tensor &maximum(T v) & {
+        for (u32 i = size(); i-- > 0; ) data[i] = std::max(data[i], v);
+        return *this;
+    }
+
+    Tensor &minimum(T v) & {
+        for (u32 i = size(); i-- > 0; ) data[i] = std::min(data[i], v);
+        return *this;
+    }
+
+    T max() {
+        if (size() <= 0) throw std::runtime_error("attempt to get max of empty tensor");
+        T res = data[0];
+        for (u32 i = size(); i-- > 0; ) res = std::max(res, data[i]);
+        return res;
+    }
+
+    T min() {
+        if (size() <= 0) throw std::runtime_error("attempt to get min of empty tensor");
+        T res = data[0];
+        for (u32 i = size(); i-- > 0; ) res = std::min(res, data[i]);
+        return res;
+    }
+
+    T sum() {
+        T res = (T)0;
+        for (u32 i = size(); i-- > 0; ) res += data[i];
+        return res;
+    }
+
+    T mean() {
+        return sum() / size();
+    }
+
+    T var() {
+        T m = mean();
+        T s = (T)0;
+        for (u32 i = size(); i-- > 0; ) {
+            T v = data[i] - m;
+            s += v * v;
+        }
+        return s / size();
+    }
+
+    T std() {
+        return std::sqrt(var());
+    }
+
     Tensor &operator/=(T v) & {
         for (u32 i = size(); i-- > 0; ) data[i] /= v;
         return *this;
