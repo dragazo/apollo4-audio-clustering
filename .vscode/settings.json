@@ -48,5 +48,11 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "freqs",
+        "linspace",
+        "matmul",
+        "mfcc"
+    ]
 }

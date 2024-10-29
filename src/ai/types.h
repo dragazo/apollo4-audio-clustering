@@ -31,6 +31,9 @@ template<typename T> struct simplify { typedef T type; };
 template<typename T> struct simplify<Complex<T>> { typedef T type; };
 template<typename T> using simplify_t = typename simplify<T>::type;
 
+template<typename T> T sqr_mag(const T &v) { return v * v; }
+template<typename T> T sqr_mag(const Complex<T> &v) { return v.real * v.real + v.imag * v.imag; }
+
 template<typename T> T conj(const T &v) { return v; }
 template<typename T> Complex<T> conj(const Complex<T> &v) { return {v.real, -v.imag}; }
 

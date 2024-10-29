@@ -33,7 +33,7 @@ int main() {
         Tensor<f32, 3> ref{data, nullptr, 2, 4, 4};
     } catch (const std::exception &x) {
         std::cout << "!!!! tensor error: " << x.what() << '\n';
-        throw x;
+        throw;
     }
 
     try { // complex
@@ -47,7 +47,7 @@ int main() {
         assert(d.real == 12 && d.imag == -6);
     } catch (const std::exception &x) {
         std::cout << "!!!! complex error: " << x.what() << '\n';
-        throw x;
+        throw;
     }
 
     try { // fft
@@ -82,7 +82,7 @@ int main() {
         assert(std::abs(sig_fft_ifft(9).real - -5.0) < 0.01 && std::abs(sig_fft_ifft(9).imag - 3.00) < 0.01);
     } catch (const std::exception &x) {
         std::cout << "!!!! fft error: " << x.what() << '\n';
-        throw x;
+        throw;
     }
 
     try { // rfft
@@ -113,7 +113,7 @@ int main() {
         assert(std::abs(sig_rfft_irfft(9).real - 1) < 0.01 && std::abs(sig_rfft_irfft(9).imag - 0) < 0.01);
     } catch (const std::exception &x) {
         std::cout << "!!!! rfft error: " << x.what() << '\n';
-        throw x;
+        throw;
     }
 
     try { // low_pass_filter
@@ -136,6 +136,7 @@ int main() {
         assert(std::abs(sig(9) - 1) < 0.01);
     } catch (const std::exception &x) {
         std::cout << "!!!! low_pass_filter error: " << x.what() << '\n';
+        throw;
     }
 
     try { // normalize_audio
@@ -157,6 +158,7 @@ int main() {
         assert(std::abs(sig(9) - 0.125) < 0.01);
     } catch (const std::exception &x) {
         std::cout << "!!!! normalize_audio error: " << x.what() << '\n';
+        throw;
     }
 
     try { // overlapping_chunks
@@ -189,6 +191,7 @@ int main() {
 
     } catch (const std::exception &x) {
         std::cout << "!!!! overlapping_chunks error: " << x.what() << '\n';
+        throw;
     }
 
     try { // mul_hann_window
@@ -210,6 +213,7 @@ int main() {
         assert(std::abs(sig(9) - 0.285) < 0.01);
     } catch (const std::exception &x) {
         std::cout << "!!!! mul_hann_window error: " << x.what() << '\n';
+        throw;
     }
 
     try { // spectrogram
@@ -226,6 +230,7 @@ int main() {
         assert(std::abs(spec(1, 2).real - -0.3750) < 0.01 && std::abs(spec(1, 2).imag -  0.3248) < 0.01);
     } catch (const std::exception &x) {
         std::cout << "!!!! spectrogram error: " << x.what() << '\n';
+        throw;
     }
 
     try { // freq_to_mel / mel_to_freq
@@ -236,6 +241,7 @@ int main() {
         assert(std::abs(mel_to_freq(1236.0f) - 1396.0235) < 0.01);
     } catch (const std::exception &x) {
         std::cout << "!!!! freq_to_mel / mel_to_freq error: " << x.what() << '\n';
+        throw;
     }
 
     try { // dct
@@ -267,6 +273,87 @@ int main() {
         assert(std::abs(t(5, 3) -  0.2706) < 0.01);
     } catch (const std::exception &x) {
         std::cout << "!!!! dct error: " << x.what() << '\n';
+        throw;
+    }
+
+    try { // linspace
+        Tensor<f32, 1> p = linspace(23.0f, 175.0f, 7);
+        assert(p.dim<0>() == 7);
+        assert(std::abs(p(0) -  23.0000) < 0.01);
+        assert(std::abs(p(1) -  48.3333) < 0.01);
+        assert(std::abs(p(2) -  73.6666) < 0.01);
+        assert(std::abs(p(3) -  99.0000) < 0.01);
+        assert(std::abs(p(4) - 124.3333) < 0.01);
+        assert(std::abs(p(5) - 149.6666) < 0.01);
+        assert(std::abs(p(6) - 175.0000) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! linspace error: " << x.what() << '\n';
+        throw;
+    }
+
+    try { // transpose
+        f32 sig_raw[] = {1, 2, 3, 4, 5, 6};
+        Tensor<f32, 2> sig { sig_raw, nullptr, 3, 2 };
+
+        Tensor<f32, 2> p = transpose(sig);
+        assert(p.dim<0>() == 2 && p.dim<1>() == 3);
+        assert(std::abs(p(0, 0) - 1) < 0.01);
+        assert(std::abs(p(0, 1) - 3) < 0.01);
+        assert(std::abs(p(0, 2) - 5) < 0.01);
+        assert(std::abs(p(1, 0) - 2) < 0.01);
+        assert(std::abs(p(1, 1) - 4) < 0.01);
+        assert(std::abs(p(1, 2) - 6) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! transpose error: " << x.what() << '\n';
+        throw;
+    }
+
+    try { // matmul
+        f32 a_raw[] = { 1, 2, 3, 4, 5, 6 };
+        Tensor<f32, 2> a { a_raw, nullptr, 2, 3 };
+
+        f32 b_raw[] = { 7, 2, 1, 3, 3, 4, 7, 3, 1, 5, 1, 2 };
+        Tensor<f32, 2> b { b_raw, nullptr, 3, 4 };
+
+        Tensor<f32, 2> x = matmul(a, b);
+        assert(x.dim<0>() == 2 && x.dim<1>() == 4);
+        assert(std::abs(x(0, 0) - 16) < 0.01);
+        assert(std::abs(x(0, 1) - 25) < 0.01);
+        assert(std::abs(x(0, 2) - 18) < 0.01);
+        assert(std::abs(x(0, 3) - 15) < 0.01);
+        assert(std::abs(x(1, 0) - 49) < 0.01);
+        assert(std::abs(x(1, 1) - 58) < 0.01);
+        assert(std::abs(x(1, 2) - 45) < 0.01);
+        assert(std::abs(x(1, 3) - 39) < 0.01);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! matmul error: " << x.what() << '\n';
+        throw;
+    }
+
+    try { // mfcc spectrogram
+        f64 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1, 7, 2, 5, 2, 6, 4, 7, 2, 4, 7, 1, 3, 6, 3, 1, 6};
+        Tensor<f64, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
+
+        Tensor<f64, 2> x = mfcc_spectrogram(sig, 8, 16.0, 7, 3);
+        assert(x.dim<0>() == 3 && x.dim<1>() == 5);
+        assert(std::abs(x(0, 0) -  0.05911126) < 0.0001);
+        assert(std::abs(x(0, 1) -  0.54501131) < 0.0001);
+        assert(std::abs(x(0, 2) - -3.64432206) < 0.0001);
+        assert(std::abs(x(0, 3) -  0.36432148) < 0.0001);
+        assert(std::abs(x(0, 4) -  0.19648368) < 0.0001);
+        assert(std::abs(x(1, 0) -  6.32131747) < 0.0001);
+        assert(std::abs(x(1, 1) -  5.58810832) < 0.0001);
+        assert(std::abs(x(1, 2) -  8.37222244) < 0.0001);
+        assert(std::abs(x(1, 3) -  6.41954012) < 0.0001);
+        assert(std::abs(x(1, 4) -  3.81325159) < 0.0001);
+        assert(std::abs(x(2, 0) - -1.55129303) < 0.0001);
+        assert(std::abs(x(2, 1) - -0.87868320) < 0.0001);
+        assert(std::abs(x(2, 2) - -0.30648488) < 0.0001);
+        assert(std::abs(x(2, 3) - -1.05776904) < 0.0001);
+        assert(std::abs(x(2, 4) -  1.11236952) < 0.0001);
+    } catch (const std::exception &x) {
+        std::cout << "!!!! mfcc spectrogram error: " << x.what() << '\n';
+        throw;
     }
 
     std::cout << "passed all tests! (no output means good)\n";
