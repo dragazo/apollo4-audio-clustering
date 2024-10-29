@@ -47,6 +47,15 @@ public:
         return *this;
     }
 
+    void leak(T *&ptr, void (*&ptr_deleter)(T*)) && {
+        ptr = data;
+        ptr_deleter = deleter;
+
+        data = nullptr;
+        deleter = nullptr;
+        for (u32 i = 0; i < D; ++i) dims[i] = 0;
+    }
+
     Tensor into_owned() && {
         Tensor res { static_cast<Tensor&&>(*this) };
         if (!res.deleter && res.data) {
