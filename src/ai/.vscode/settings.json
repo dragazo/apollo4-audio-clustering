@@ -50,9 +50,11 @@
         "typeinfo": "cpp"
     },
     "cSpell.words": [
+        "Dequantize",
         "hann",
         "ifft",
         "irfft",
+        "Relu",
         "rfft",
         "tflite"
     ]
