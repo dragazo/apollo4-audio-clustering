@@ -53,6 +53,7 @@
         "hann",
         "ifft",
         "irfft",
-        "rfft"
+        "rfft",
+        "tflite"
     ]
 }
