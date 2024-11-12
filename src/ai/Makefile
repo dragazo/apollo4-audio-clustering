@@ -1,58 +1,102 @@
-TFLITE_MICRO_INCLUDES = \
-	-Itflite-micro/ \
-	-Iflatbuffers/include/ \
-	-Igemmlowp/ \
-	-Iruy/
-
-TFLITE_MICRO_SRC = \
-	tflite-micro/tensorflow/lite/micro/arena_allocator/recording_single_arena_buffer_allocator.cc \
-	tflite-micro/tensorflow/lite/micro/arena_allocator/non_persistent_arena_buffer_allocator.cc \
-	tflite-micro/tensorflow/lite/micro/arena_allocator/persistent_arena_buffer_allocator.cc\
-	tflite-micro/tensorflow/lite/micro/arena_allocator/single_arena_buffer_allocator.cc \
-	tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.cc \
-	tflite-micro/tensorflow/lite/micro/memory_planner/greedy_memory_planner.cc \
-	tflite-micro/tensorflow/lite/micro/memory_planner/linear_memory_planner.cc \
-	tflite-micro/tensorflow/lite/micro/tflite_bridge/micro_error_reporter.cc \
-	tflite-micro/tensorflow/lite/kernels/internal/portable_tensor_utils.cc \
-	tflite-micro/tensorflow/compiler/mlir/lite/core/api/error_reporter.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/fully_connected_common.cc \
-	tflite-micro/tensorflow/lite/kernels/internal/quantization_util.cc \
-	tflite-micro/tensorflow/compiler/mlir/lite/schema/schema_utils.cc \
-	tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.cc \
-	tflite-micro/tensorflow/lite/micro/micro_interpreter_context.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/leaky_relu_common.cc \
-	tflite-micro/tensorflow/lite/micro/recording_micro_allocator.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/dequantize_common.cc \
-	tflite-micro/tensorflow/lite/kernels/internal/tensor_ctypes.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/fully_connected.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/quantize_common.cc \
-	tflite-micro/tensorflow/lite/micro/micro_interpreter_graph.cc \
-	tflite-micro/tensorflow/lite/micro/micro_resource_variable.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/reshape_common.cc \
-	tflite-micro/tensorflow/lite/micro/micro_allocation_info.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/conv_common.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/kernel_util.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/dequantize.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/leaky_relu.cc \
-	tflite-micro/tensorflow/lite/kernels/internal/common.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/transpose.cc \
-	tflite-micro/tensorflow/lite/micro/micro_interpreter.cc \
-	tflite-micro/tensorflow/lite/micro/micro_op_resolver.cc \
-	tflite-micro/tensorflow/lite/micro/flatbuffer_utils.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/quantize.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/reshape.cc \
-	tflite-micro/tensorflow/lite/micro/micro_allocator.cc \
-	tflite-micro/tensorflow/lite/micro/memory_helpers.cc \
-	tflite-micro/tensorflow/lite/kernels/kernel_util.cc \
-	tflite-micro/tensorflow/lite/micro/micro_context.cc \
-	tflite-micro/tensorflow/lite/micro/kernels/conv.cc \
-	tflite-micro/tensorflow/lite/micro/micro_utils.cc \
-	tflite-micro/tensorflow/lite/micro/debug_log.cc \
-	tflite-micro/tensorflow/lite/micro/micro_log.cc \
-	tflite-micro/tensorflow/lite/core/c/common.cc \
-	tflite-micro/tensorflow/lite/array.cc
-
-test: ALWAYS
-	g++ $(TFLITE_MICRO_INCLUDES) $(TFLITE_MICRO_SRC) *.cpp -o test && ./test
-
-ALWAYS:;
+test: build/model.o build/test.o build/tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.o build/tflite-micro/tensorflow/lite/micro/micro_allocator.o build/tflite-micro/tensorflow/lite/kernels/kernel_util.o build/tflite-micro/tensorflow/lite/micro/memory_planner/greedy_memory_planner.o build/tflite-micro/tensorflow/lite/kernels/internal/quantization_util.o build/tflite-micro/tensorflow/lite/micro/micro_allocation_info.o build/tflite-micro/tensorflow/lite/core/c/common.o build/tflite-micro/tensorflow/lite/micro/micro_interpreter.o build/tflite-micro/tensorflow/lite/micro/micro_interpreter_graph.o build/tflite-micro/tensorflow/lite/micro/recording_micro_allocator.o build/tflite-micro/tensorflow/lite/micro/kernels/kernel_util.o build/tflite-micro/tensorflow/lite/micro/kernels/quantize_common.o build/tflite-micro/tensorflow/lite/micro/kernels/conv_common.o build/tflite-micro/tensorflow/lite/micro/kernels/fully_connected.o build/tflite-micro/tensorflow/lite/micro/arena_allocator/single_arena_buffer_allocator.o build/tflite-micro/tensorflow/lite/micro/micro_interpreter_context.o build/tflite-micro/tensorflow/lite/micro/micro_context.o build/tflite-micro/tensorflow/lite/micro/arena_allocator/non_persistent_arena_buffer_allocator.o build/tflite-micro/tensorflow/lite/micro/kernels/fully_connected_common.o build/tflite-micro/tensorflow/lite/micro/kernels/conv.o build/tflite-micro/tensorflow/lite/micro/micro_resource_variable.o build/tflite-micro/tensorflow/lite/micro/memory_helpers.o build/tflite-micro/tensorflow/lite/micro/kernels/transpose.o build/tflite-micro/tensorflow/lite/kernels/internal/common.o build/tflite-micro/tensorflow/lite/micro/kernels/leaky_relu.o build/tflite-micro/tensorflow/lite/micro/kernels/reshape_common.o build/tflite-micro/tensorflow/lite/micro/kernels/dequantize.o build/tflite-micro/tensorflow/lite/kernels/internal/portable_tensor_utils.o build/tflite-micro/tensorflow/lite/micro/flatbuffer_utils.o build/tflite-micro/tensorflow/lite/micro/kernels/leaky_relu_common.o build/tflite-micro/tensorflow/lite/micro/arena_allocator/recording_single_arena_buffer_allocator.o build/tflite-micro/tensorflow/lite/micro/micro_utils.o build/tflite-micro/tensorflow/compiler/mlir/lite/schema/schema_utils.o build/tflite-micro/tensorflow/lite/micro/debug_log.o build/tflite-micro/tensorflow/lite/micro/kernels/dequantize_common.o build/tflite-micro/tensorflow/lite/micro/kernels/reshape.o build/tflite-micro/tensorflow/lite/micro/micro_op_resolver.o build/tflite-micro/tensorflow/lite/micro/memory_planner/linear_memory_planner.o build/tflite-micro/tensorflow/lite/micro/arena_allocator/persistent_arena_buffer_allocator.o build/tflite-micro/tensorflow/lite/micro/micro_log.o build/tf.o build/tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.o build/tflite-micro/tensorflow/lite/micro/kernels/quantize.o build/tflite-micro/tensorflow/lite/micro/tflite_bridge/micro_error_reporter.o build/tflite-micro/tensorflow/compiler/mlir/lite/core/api/error_reporter.o build/tflite-micro/tensorflow/lite/kernels/internal/tensor_ctypes.o build/tflite-micro/tensorflow/lite/array.o
+	g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ build/model.o build/test.o build/tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.o build/tflite-micro/tensorflow/lite/micro/micro_allocator.o build/tflite-micro/tensorflow/lite/kernels/kernel_util.o build/tflite-micro/tensorflow/lite/micro/memory_planner/greedy_memory_planner.o build/tflite-micro/tensorflow/lite/kernels/internal/quantization_util.o build/tflite-micro/tensorflow/lite/micro/micro_allocation_info.o build/tflite-micro/tensorflow/lite/core/c/common.o build/tflite-micro/tensorflow/lite/micro/micro_interpreter.o build/tflite-micro/tensorflow/lite/micro/micro_interpreter_graph.o build/tflite-micro/tensorflow/lite/micro/recording_micro_allocator.o build/tflite-micro/tensorflow/lite/micro/kernels/kernel_util.o build/tflite-micro/tensorflow/lite/micro/kernels/quantize_common.o build/tflite-micro/tensorflow/lite/micro/kernels/conv_common.o build/tflite-micro/tensorflow/lite/micro/kernels/fully_connected.o build/tflite-micro/tensorflow/lite/micro/arena_allocator/single_arena_buffer_allocator.o build/tflite-micro/tensorflow/lite/micro/micro_interpreter_context.o build/tflite-micro/tensorflow/lite/micro/micro_context.o build/tflite-micro/tensorflow/lite/micro/arena_allocator/non_persistent_arena_buffer_allocator.o build/tflite-micro/tensorflow/lite/micro/kernels/fully_connected_common.o build/tflite-micro/tensorflow/lite/micro/kernels/conv.o build/tflite-micro/tensorflow/lite/micro/micro_resource_variable.o build/tflite-micro/tensorflow/lite/micro/memory_helpers.o build/tflite-micro/tensorflow/lite/micro/kernels/transpose.o build/tflite-micro/tensorflow/lite/kernels/internal/common.o build/tflite-micro/tensorflow/lite/micro/kernels/leaky_relu.o build/tflite-micro/tensorflow/lite/micro/kernels/reshape_common.o build/tflite-micro/tensorflow/lite/micro/kernels/dequantize.o build/tflite-micro/tensorflow/lite/kernels/internal/portable_tensor_utils.o build/tflite-micro/tensorflow/lite/micro/flatbuffer_utils.o build/tflite-micro/tensorflow/lite/micro/kernels/leaky_relu_common.o build/tflite-micro/tensorflow/lite/micro/arena_allocator/recording_single_arena_buffer_allocator.o build/tflite-micro/tensorflow/lite/micro/micro_utils.o build/tflite-micro/tensorflow/compiler/mlir/lite/schema/schema_utils.o build/tflite-micro/tensorflow/lite/micro/debug_log.o build/tflite-micro/tensorflow/lite/micro/kernels/dequantize_common.o build/tflite-micro/tensorflow/lite/micro/kernels/reshape.o build/tflite-micro/tensorflow/lite/micro/micro_op_resolver.o build/tflite-micro/tensorflow/lite/micro/memory_planner/linear_memory_planner.o build/tflite-micro/tensorflow/lite/micro/arena_allocator/persistent_arena_buffer_allocator.o build/tflite-micro/tensorflow/lite/micro/micro_log.o build/tf.o build/tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.o build/tflite-micro/tensorflow/lite/micro/kernels/quantize.o build/tflite-micro/tensorflow/lite/micro/tflite_bridge/micro_error_reporter.o build/tflite-micro/tensorflow/compiler/mlir/lite/core/api/error_reporter.o build/tflite-micro/tensorflow/lite/kernels/internal/tensor_ctypes.o build/tflite-micro/tensorflow/lite/array.o -o test
+clean:
+	rm -rf build
+build/model.o: model.cpp
+	mkdir -p build/model.cp && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ model.cpp -c -o build/model.o
+build/test.o: test.cpp
+	mkdir -p build/test.cp && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ test.cpp -c -o build/test.o
+build/tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.o: tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/core/api && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.cc -c -o build/tflite-micro/tensorflow/lite/core/api/flatbuffer_conversions.o
+build/tflite-micro/tensorflow/lite/micro/micro_allocator.o: tflite-micro/tensorflow/lite/micro/micro_allocator.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_allocator.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_allocator.o
+build/tflite-micro/tensorflow/lite/kernels/kernel_util.o: tflite-micro/tensorflow/lite/kernels/kernel_util.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/kernels/kernel_util.cc -c -o build/tflite-micro/tensorflow/lite/kernels/kernel_util.o
+build/tflite-micro/tensorflow/lite/micro/memory_planner/greedy_memory_planner.o: tflite-micro/tensorflow/lite/micro/memory_planner/greedy_memory_planner.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/memory_planner && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/memory_planner/greedy_memory_planner.cc -c -o build/tflite-micro/tensorflow/lite/micro/memory_planner/greedy_memory_planner.o
+build/tflite-micro/tensorflow/lite/kernels/internal/quantization_util.o: tflite-micro/tensorflow/lite/kernels/internal/quantization_util.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/kernels/internal && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/kernels/internal/quantization_util.cc -c -o build/tflite-micro/tensorflow/lite/kernels/internal/quantization_util.o
+build/tflite-micro/tensorflow/lite/micro/micro_allocation_info.o: tflite-micro/tensorflow/lite/micro/micro_allocation_info.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_allocation_info.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_allocation_info.o
+build/tflite-micro/tensorflow/lite/core/c/common.o: tflite-micro/tensorflow/lite/core/c/common.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/core/c && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/core/c/common.cc -c -o build/tflite-micro/tensorflow/lite/core/c/common.o
+build/tflite-micro/tensorflow/lite/micro/micro_interpreter.o: tflite-micro/tensorflow/lite/micro/micro_interpreter.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_interpreter.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_interpreter.o
+build/tflite-micro/tensorflow/lite/micro/micro_interpreter_graph.o: tflite-micro/tensorflow/lite/micro/micro_interpreter_graph.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_interpreter_graph.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_interpreter_graph.o
+build/tflite-micro/tensorflow/lite/micro/recording_micro_allocator.o: tflite-micro/tensorflow/lite/micro/recording_micro_allocator.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/recording_micro_allocator.cc -c -o build/tflite-micro/tensorflow/lite/micro/recording_micro_allocator.o
+build/tflite-micro/tensorflow/lite/micro/kernels/kernel_util.o: tflite-micro/tensorflow/lite/micro/kernels/kernel_util.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/kernel_util.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/kernel_util.o
+build/tflite-micro/tensorflow/lite/micro/kernels/quantize_common.o: tflite-micro/tensorflow/lite/micro/kernels/quantize_common.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/quantize_common.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/quantize_common.o
+build/tflite-micro/tensorflow/lite/micro/kernels/conv_common.o: tflite-micro/tensorflow/lite/micro/kernels/conv_common.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/conv_common.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/conv_common.o
+build/tflite-micro/tensorflow/lite/micro/kernels/fully_connected.o: tflite-micro/tensorflow/lite/micro/kernels/fully_connected.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/fully_connected.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/fully_connected.o
+build/tflite-micro/tensorflow/lite/micro/arena_allocator/single_arena_buffer_allocator.o: tflite-micro/tensorflow/lite/micro/arena_allocator/single_arena_buffer_allocator.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/arena_allocator && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/arena_allocator/single_arena_buffer_allocator.cc -c -o build/tflite-micro/tensorflow/lite/micro/arena_allocator/single_arena_buffer_allocator.o
+build/tflite-micro/tensorflow/lite/micro/micro_interpreter_context.o: tflite-micro/tensorflow/lite/micro/micro_interpreter_context.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_interpreter_context.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_interpreter_context.o
+build/tflite-micro/tensorflow/lite/micro/micro_context.o: tflite-micro/tensorflow/lite/micro/micro_context.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_context.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_context.o
+build/tflite-micro/tensorflow/lite/micro/arena_allocator/non_persistent_arena_buffer_allocator.o: tflite-micro/tensorflow/lite/micro/arena_allocator/non_persistent_arena_buffer_allocator.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/arena_allocator && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/arena_allocator/non_persistent_arena_buffer_allocator.cc -c -o build/tflite-micro/tensorflow/lite/micro/arena_allocator/non_persistent_arena_buffer_allocator.o
+build/tflite-micro/tensorflow/lite/micro/kernels/fully_connected_common.o: tflite-micro/tensorflow/lite/micro/kernels/fully_connected_common.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/fully_connected_common.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/fully_connected_common.o
+build/tflite-micro/tensorflow/lite/micro/kernels/conv.o: tflite-micro/tensorflow/lite/micro/kernels/conv.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/conv.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/conv.o
+build/tflite-micro/tensorflow/lite/micro/micro_resource_variable.o: tflite-micro/tensorflow/lite/micro/micro_resource_variable.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_resource_variable.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_resource_variable.o
+build/tflite-micro/tensorflow/lite/micro/memory_helpers.o: tflite-micro/tensorflow/lite/micro/memory_helpers.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/memory_helpers.cc -c -o build/tflite-micro/tensorflow/lite/micro/memory_helpers.o
+build/tflite-micro/tensorflow/lite/micro/kernels/transpose.o: tflite-micro/tensorflow/lite/micro/kernels/transpose.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/transpose.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/transpose.o
+build/tflite-micro/tensorflow/lite/kernels/internal/common.o: tflite-micro/tensorflow/lite/kernels/internal/common.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/kernels/internal && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/kernels/internal/common.cc -c -o build/tflite-micro/tensorflow/lite/kernels/internal/common.o
+build/tflite-micro/tensorflow/lite/micro/kernels/leaky_relu.o: tflite-micro/tensorflow/lite/micro/kernels/leaky_relu.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/leaky_relu.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/leaky_relu.o
+build/tflite-micro/tensorflow/lite/micro/kernels/reshape_common.o: tflite-micro/tensorflow/lite/micro/kernels/reshape_common.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/reshape_common.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/reshape_common.o
+build/tflite-micro/tensorflow/lite/micro/kernels/dequantize.o: tflite-micro/tensorflow/lite/micro/kernels/dequantize.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/dequantize.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/dequantize.o
+build/tflite-micro/tensorflow/lite/kernels/internal/portable_tensor_utils.o: tflite-micro/tensorflow/lite/kernels/internal/portable_tensor_utils.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/kernels/internal && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/kernels/internal/portable_tensor_utils.cc -c -o build/tflite-micro/tensorflow/lite/kernels/internal/portable_tensor_utils.o
+build/tflite-micro/tensorflow/lite/micro/flatbuffer_utils.o: tflite-micro/tensorflow/lite/micro/flatbuffer_utils.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/flatbuffer_utils.cc -c -o build/tflite-micro/tensorflow/lite/micro/flatbuffer_utils.o
+build/tflite-micro/tensorflow/lite/micro/kernels/leaky_relu_common.o: tflite-micro/tensorflow/lite/micro/kernels/leaky_relu_common.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/leaky_relu_common.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/leaky_relu_common.o
+build/tflite-micro/tensorflow/lite/micro/arena_allocator/recording_single_arena_buffer_allocator.o: tflite-micro/tensorflow/lite/micro/arena_allocator/recording_single_arena_buffer_allocator.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/arena_allocator && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/arena_allocator/recording_single_arena_buffer_allocator.cc -c -o build/tflite-micro/tensorflow/lite/micro/arena_allocator/recording_single_arena_buffer_allocator.o
+build/tflite-micro/tensorflow/lite/micro/micro_utils.o: tflite-micro/tensorflow/lite/micro/micro_utils.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_utils.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_utils.o
+build/tflite-micro/tensorflow/compiler/mlir/lite/schema/schema_utils.o: tflite-micro/tensorflow/compiler/mlir/lite/schema/schema_utils.cc
+	mkdir -p build/tflite-micro/tensorflow/compiler/mlir/lite/schema && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/compiler/mlir/lite/schema/schema_utils.cc -c -o build/tflite-micro/tensorflow/compiler/mlir/lite/schema/schema_utils.o
+build/tflite-micro/tensorflow/lite/micro/debug_log.o: tflite-micro/tensorflow/lite/micro/debug_log.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/debug_log.cc -c -o build/tflite-micro/tensorflow/lite/micro/debug_log.o
+build/tflite-micro/tensorflow/lite/micro/kernels/dequantize_common.o: tflite-micro/tensorflow/lite/micro/kernels/dequantize_common.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/dequantize_common.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/dequantize_common.o
+build/tflite-micro/tensorflow/lite/micro/kernels/reshape.o: tflite-micro/tensorflow/lite/micro/kernels/reshape.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/reshape.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/reshape.o
+build/tflite-micro/tensorflow/lite/micro/micro_op_resolver.o: tflite-micro/tensorflow/lite/micro/micro_op_resolver.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_op_resolver.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_op_resolver.o
+build/tflite-micro/tensorflow/lite/micro/memory_planner/linear_memory_planner.o: tflite-micro/tensorflow/lite/micro/memory_planner/linear_memory_planner.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/memory_planner && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/memory_planner/linear_memory_planner.cc -c -o build/tflite-micro/tensorflow/lite/micro/memory_planner/linear_memory_planner.o
+build/tflite-micro/tensorflow/lite/micro/arena_allocator/persistent_arena_buffer_allocator.o: tflite-micro/tensorflow/lite/micro/arena_allocator/persistent_arena_buffer_allocator.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/arena_allocator && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/arena_allocator/persistent_arena_buffer_allocator.cc -c -o build/tflite-micro/tensorflow/lite/micro/arena_allocator/persistent_arena_buffer_allocator.o
+build/tflite-micro/tensorflow/lite/micro/micro_log.o: tflite-micro/tensorflow/lite/micro/micro_log.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/micro_log.cc -c -o build/tflite-micro/tensorflow/lite/micro/micro_log.o
+build/tf.o: tf.cpp
+	mkdir -p build/tf.cp && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tf.cpp -c -o build/tf.o
+build/tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.o: tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/tflite_bridge && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.cc -c -o build/tflite-micro/tensorflow/lite/micro/tflite_bridge/flatbuffer_conversions_bridge.o
+build/tflite-micro/tensorflow/lite/micro/kernels/quantize.o: tflite-micro/tensorflow/lite/micro/kernels/quantize.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/kernels && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/kernels/quantize.cc -c -o build/tflite-micro/tensorflow/lite/micro/kernels/quantize.o
+build/tflite-micro/tensorflow/lite/micro/tflite_bridge/micro_error_reporter.o: tflite-micro/tensorflow/lite/micro/tflite_bridge/micro_error_reporter.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/micro/tflite_bridge && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/micro/tflite_bridge/micro_error_reporter.cc -c -o build/tflite-micro/tensorflow/lite/micro/tflite_bridge/micro_error_reporter.o
+build/tflite-micro/tensorflow/compiler/mlir/lite/core/api/error_reporter.o: tflite-micro/tensorflow/compiler/mlir/lite/core/api/error_reporter.cc
+	mkdir -p build/tflite-micro/tensorflow/compiler/mlir/lite/core/api && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/compiler/mlir/lite/core/api/error_reporter.cc -c -o build/tflite-micro/tensorflow/compiler/mlir/lite/core/api/error_reporter.o
+build/tflite-micro/tensorflow/lite/kernels/internal/tensor_ctypes.o: tflite-micro/tensorflow/lite/kernels/internal/tensor_ctypes.cc
+	mkdir -p build/tflite-micro/tensorflow/lite/kernels/internal && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/kernels/internal/tensor_ctypes.cc -c -o build/tflite-micro/tensorflow/lite/kernels/internal/tensor_ctypes.o
+build/tflite-micro/tensorflow/lite/array.o: tflite-micro/tensorflow/lite/array.cc
+	mkdir -p build/tflite-micro/tensorflow/lite && g++ -Itflite-micro/ -Iflatbuffers/include/ -Igemmlowp/ -Iruy/ tflite-micro/tensorflow/lite/array.cc -c -o build/tflite-micro/tensorflow/lite/array.o
