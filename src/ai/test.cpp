@@ -1630,6 +1630,23 @@ int main() {
         Tensor<f32, 2> sig_prep = mfcc_spectrogram_for_learning(sig, 8000.0f);
 
         Tensor<f32, 1> embed = inference(sig_prep);
+        assert(embed.dim<0>() == 16);
+        assert(std::abs(embed(0)  -  1.2245) < 0.175);
+        assert(std::abs(embed(1)  - -0.0104) < 0.175);
+        assert(std::abs(embed(2)  -  2.6651) < 0.175);
+        assert(std::abs(embed(3)  -  1.1899) < 0.175);
+        assert(std::abs(embed(4)  - -0.0745) < 0.175);
+        assert(std::abs(embed(5)  - -1.2355) < 0.175);
+        assert(std::abs(embed(6)  -  1.3877) < 0.175);
+        assert(std::abs(embed(7)  - -1.1311) < 0.175);
+        assert(std::abs(embed(8)  -  1.0021) < 0.175);
+        assert(std::abs(embed(9)  - -0.7951) < 0.175);
+        assert(std::abs(embed(10) -  0.2675) < 0.175);
+        assert(std::abs(embed(11) -  0.9879) < 0.175);
+        assert(std::abs(embed(12) - -0.0664) < 0.175);
+        assert(std::abs(embed(13) - -0.2827) < 0.175);
+        assert(std::abs(embed(14) -  0.2799) < 0.175);
+        assert(std::abs(embed(15) -  0.3221) < 0.175);
     } catch (const std::exception &x) {
         std::cout << "!!!! inference error: " << x.what() << '\n';
         throw;
