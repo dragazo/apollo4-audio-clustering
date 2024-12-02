@@ -23,7 +23,7 @@ public:
     }
 
     template<typename ...Args, std::enable_if_t<sizeof...(Args) == D, int> = 0>
-    Tensor(T *_data, void (*_deleter)(T*), Args ..._dims) : dims{static_cast<u32>(_dims)...}, data{_data}, deleter{_deleter} {};
+    Tensor(T *_data, void (*_deleter)(T*), Args ..._dims) : dims{static_cast<u32>(_dims)...}, data{_data}, deleter{_deleter} {}
 
     Tensor(const Tensor &other) = delete;
     Tensor &operator=(const Tensor &other) = delete;
@@ -90,7 +90,10 @@ public:
         u32 p = 0;
         u32 s = 1;
         for (u32 i = D; i-- > 0; ) {
+            #ifndef NO_EXCEPTIONS
             if (pos[i] >= dims[i]) throw std::runtime_error("index out of bounds");
+            #endif
+
             p += pos[i] * s;
             s *= dims[i];
         }
@@ -108,7 +111,10 @@ public:
     }
 
     T max() {
+        #ifndef NO_EXCEPTIONS
         if (size() <= 0) throw std::runtime_error("attempt to get max of empty tensor");
+        #endif
+
         T res = data[0];
         for (u32 i = size(); i-- > 0; ) res = std::max(res, data[i]);
         return res;

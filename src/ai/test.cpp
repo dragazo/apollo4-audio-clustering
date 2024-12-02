@@ -9,10 +9,19 @@
 template<typename T>
 void deleter(T *v) { delete[] v; }
 
+#ifndef NO_EXCEPTIONS
+#define TRY try
+#define CATCH(body) catch (const std::exception &x) body
+#else
+#define TRY
+#define CATCH(body) {}
+#endif
+
 int main() {
     std::cout << "starting tests...\n";
 
-    try { // tensor
+    TRY { // tensor
+
         Tensor<f32, 1> vec{new f32[52], deleter, 52};
         Tensor<f64, 2> tab{new f64[30], deleter, 6, 5};
 
@@ -32,12 +41,12 @@ int main() {
 
         f32 data[16];
         Tensor<f32, 3> ref{data, nullptr, 2, 4, 4};
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! tensor error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // complex
+    TRY { // complex
         c32 a = c32 {5, 7} * c32 {-4, 1};
         assert(a.real == -27 && a.imag == -23);
         c32 b = c32 {6, 2} + c32 { 4, -8 };
@@ -46,12 +55,12 @@ int main() {
         assert(c.real == 12 && c.imag == 4);
         c32 d = 3.0f * c32 {4, -2};
         assert(d.real == 12 && d.imag == -6);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! complex error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // fft
+    TRY { // fft
         c32 sig_raw[] = { {1, 2}, {3, -2}, {-2, 0}, {1, 11}, {8, -5}, {4, 0}, {0, -3}, {0, 0}, {1, 4}, {-5, 3} };
         Tensor<c32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
         assert(sig.dim<0>() == 10);
@@ -81,12 +90,12 @@ int main() {
         assert(std::abs(sig_fft_ifft(7).real - 0.00) < 0.01 && std::abs(sig_fft_ifft(7).imag - 0.00) < 0.01);
         assert(std::abs(sig_fft_ifft(8).real - 1.00) < 0.01 && std::abs(sig_fft_ifft(8).imag - 4.00) < 0.01);
         assert(std::abs(sig_fft_ifft(9).real - -5.0) < 0.01 && std::abs(sig_fft_ifft(9).imag - 3.00) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! fft error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // rfft
+    TRY { // rfft
         f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
         Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
         assert(sig.dim<0>() == 10);
@@ -112,12 +121,12 @@ int main() {
         assert(std::abs(sig_rfft_irfft(7).real - 3) < 0.01 && std::abs(sig_rfft_irfft(7).imag - 0) < 0.01);
         assert(std::abs(sig_rfft_irfft(8).real - 8) < 0.01 && std::abs(sig_rfft_irfft(8).imag - 0) < 0.01);
         assert(std::abs(sig_rfft_irfft(9).real - 1) < 0.01 && std::abs(sig_rfft_irfft(9).imag - 0) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! rfft error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // low_pass_filter
+    TRY { // low_pass_filter
         f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
         Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
         assert(sig.dim<0>() == 10);
@@ -135,12 +144,12 @@ int main() {
         assert(std::abs(sig(7) - 3) < 0.01);
         assert(std::abs(sig(8) - 8) < 0.01);
         assert(std::abs(sig(9) - 1) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! low_pass_filter error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // normalize_audio
+    TRY { // normalize_audio
         f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
         Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
 
@@ -157,12 +166,12 @@ int main() {
         assert(std::abs(sig(7) - 0.375) < 0.01);
         assert(std::abs(sig(8) - 1.000) < 0.01);
         assert(std::abs(sig(9) - 0.125) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! normalize_audio error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // overlapping_chunks
+    TRY { // overlapping_chunks
         f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
         Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
 
@@ -190,12 +199,12 @@ int main() {
         assert(std::abs(chunks[3](2) - 8) < 0.01);
         assert(std::abs(chunks[3](3) - 1) < 0.01);
 
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! overlapping_chunks error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // mul_hann_window
+    TRY { // mul_hann_window
         f32 sig_raw[] = {1, 1, 1, 1, 2, 1, 1, 1, 1, 3};
         Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
 
@@ -212,12 +221,12 @@ int main() {
         assert(std::abs(sig(7) - 0.655) < 0.01);
         assert(std::abs(sig(8) - 0.345) < 0.01);
         assert(std::abs(sig(9) - 0.285) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! mul_hann_window error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // spectrogram
+    TRY { // spectrogram
         f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
         Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
 
@@ -229,23 +238,23 @@ int main() {
         assert(std::abs(spec(1, 0).real -  1.5000) < 0.01 && std::abs(spec(1, 0).imag -  0.0000) < 0.01);
         assert(std::abs(spec(1, 1).real - -0.4687) < 0.01 && std::abs(spec(1, 1).imag - -0.1623) < 0.01);
         assert(std::abs(spec(1, 2).real - -0.3750) < 0.01 && std::abs(spec(1, 2).imag -  0.3248) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! spectrogram error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // freq_to_mel / mel_to_freq
+    TRY { // freq_to_mel / mel_to_freq
         assert(std::abs(freq_to_mel(921.0f) - 946.3624) < 0.01);
         assert(std::abs(freq_to_mel(391.0f) - 500.1284) < 0.01);
 
         assert(std::abs(mel_to_freq(129.0f) - 84.8899) < 0.01);
         assert(std::abs(mel_to_freq(1236.0f) - 1396.0235) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! freq_to_mel / mel_to_freq error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // dct
+    TRY { // dct
         Tensor<f32, 2> t = dct<f32>(4, 6);
         assert(t.dim<0>() == 6 && t.dim<1>() == 4);
         assert(std::abs(t(0, 0) -  0.5) < 0.01);
@@ -272,12 +281,12 @@ int main() {
         assert(std::abs(t(5, 1) -  0.6533) < 0.01);
         assert(std::abs(t(5, 2) - -0.6533) < 0.01);
         assert(std::abs(t(5, 3) -  0.2706) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! dct error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // linspace
+    TRY { // linspace
         Tensor<f32, 1> p = linspace(23.0f, 175.0f, 7);
         assert(p.dim<0>() == 7);
         assert(std::abs(p(0) -  23.0000) < 0.01);
@@ -287,12 +296,12 @@ int main() {
         assert(std::abs(p(4) - 124.3333) < 0.01);
         assert(std::abs(p(5) - 149.6666) < 0.01);
         assert(std::abs(p(6) - 175.0000) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! linspace error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // transpose
+    TRY { // transpose
         f32 sig_raw[] = {1, 2, 3, 4, 5, 6};
         Tensor<f32, 2> sig { sig_raw, nullptr, 3, 2 };
 
@@ -304,12 +313,12 @@ int main() {
         assert(std::abs(p(1, 0) - 2) < 0.01);
         assert(std::abs(p(1, 1) - 4) < 0.01);
         assert(std::abs(p(1, 2) - 6) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! transpose error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // matmul
+    TRY { // matmul
         f32 a_raw[] = { 1, 2, 3, 4, 5, 6 };
         Tensor<f32, 2> a { a_raw, nullptr, 2, 3 };
 
@@ -326,12 +335,12 @@ int main() {
         assert(std::abs(x(1, 1) - 58) < 0.01);
         assert(std::abs(x(1, 2) - 45) < 0.01);
         assert(std::abs(x(1, 3) - 39) < 0.01);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! matmul error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // mfcc spectrogram
+    TRY { // mfcc spectrogram
         f64 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1, 7, 2, 5, 2, 6, 4, 7, 2, 4, 7, 1, 3, 6, 3, 1, 6};
         Tensor<f64, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
 
@@ -352,12 +361,12 @@ int main() {
         assert(std::abs(x(2, 2) - -0.30648488) < 0.0001);
         assert(std::abs(x(2, 3) - -1.05776904) < 0.0001);
         assert(std::abs(x(2, 4) -  1.11236952) < 0.0001);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! mfcc spectrogram error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // mfcc spectrogram for learning
+    TRY { // mfcc spectrogram for learning
         f64 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1, 7, 2, 5, 2, 6, 4, 7, 2, 4, 7, 1, 3, 6, 3, 1, 6};
         Tensor<f64, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
 
@@ -818,12 +827,12 @@ int main() {
         assert(std::abs(x(64, 4) - 0.00000000) < 0.0001);
         assert(std::abs(x(64, 5) - 0.28007387) < 0.0001);
         assert(std::abs(x(64, 6) - 1.00000000) < 0.0001);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! mfcc spectrogram for learning error: " << x.what() << '\n';
         throw;
-    }
+    })
 
-    try { // inference
+    TRY { // inference
         f32 sig_raw[] = {
 -0.0011146776378154755, 0.0042790696024894714, -0.008131816983222961, -0.020017728209495544, -0.016952985897660255, -0.018140768632292747, -0.032759666442871094, -0.033158864825963974, -0.03552606329321861, -0.03607349097728729, 
 -0.037852607667446136, -0.045238982886075974, -0.05475057289004326, -0.046342022716999054, -0.04243842884898186, -0.05098174512386322, -0.05029767006635666, -0.05304955691099167, -0.052316442131996155, -0.04782833158969879, 
@@ -1647,10 +1656,10 @@ int main() {
         assert(std::abs(embed(13) - -0.2827) < 0.175);
         assert(std::abs(embed(14) -  0.2799) < 0.175);
         assert(std::abs(embed(15) -  0.3221) < 0.175);
-    } catch (const std::exception &x) {
+    } CATCH({
         std::cout << "!!!! inference error: " << x.what() << '\n';
         throw;
-    }
+    })
 
     std::cout << "passed all tests! (no output means good)\n";
 }

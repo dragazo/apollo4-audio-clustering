@@ -37,6 +37,7 @@ STARTUP_FILE := ./AmbiqSDK/bsp/$(BSP)/linker/startup_gcc.c
 
 #### Required Executables ####
 CC = $(TOOLCHAIN)-gcc
+CCPP = $(TOOLCHAIN)-g++
 GCC = $(TOOLCHAIN)-gcc
 CPP = $(TOOLCHAIN)-cpp
 LD = $(TOOLCHAIN)-ld
@@ -94,35 +95,53 @@ SRC += logging.c
 SRC += rtc.c
 SRC += system.c
 SRC += main.c
+SRC += ai.cpp
 
 CSRC = $(filter %.c,$(SRC))
 ASRC = $(filter %.s,$(SRC))
+CPPSRC = $(filter %.cpp,$(SRC))
 
 OBJS = $(CSRC:%.c=$(CONFIG)/%.o)
-OBJS+= $(ASRC:%.s=$(CONFIG)/%.o)
+OBJS += $(ASRC:%.s=$(CONFIG)/%.o)
+OBJS += $(CPPSRC:%.cpp=$(CONFIG)/%.o)
+OBJS += $(shell find src/ai/ -name '*.o' | grep -Fxv src/ai/build/test.o)
 
-DEPS = $(CSRC:%.c=$(CONFIG)/%.d)
-DEPS+= $(ASRC:%.s=$(CONFIG)/%.d)
+DEPS  = $(CSRC:%.c=$(CONFIG)/%.d)
+DEPS += $(ASRC:%.s=$(CONFIG)/%.d)
+DEPS += $(CPPSRC:%.cpp=$(CONFIG)/%.d)
 
 LIBS = AmbiqSDK/bsp/$(BSP)/gcc/bin/libam_bsp.a
 LIBS += AmbiqSDK/mcu/$(PART)/hal/mcu/gcc/bin/libam_hal.a
 
 CFLAGS = -mthumb -mcpu=$(CPU) -mfpu=$(FPU) -mfloat-abi=$(FABI)
-CFLAGS+= -ffunction-sections -fdata-sections -fomit-frame-pointer
-CFLAGS+= -MMD -MP -std=c99 -Wall -O3
-CFLAGS+= $(DEFINES)
-CFLAGS+= $(INCLUDES)
+CFLAGS += -ffunction-sections -fdata-sections -fomit-frame-pointer
+CFLAGS += -MMD -MP -std=c99 -Wall -O3
+CFLAGS += $(DEFINES)
+CFLAGS += $(INCLUDES)
+
+CPPFLAGS = -mthumb -mcpu=$(CPU) -mfpu=$(FPU) -mfloat-abi=$(FABI)
+CPPFLAGS += -ffunction-sections -fdata-sections -fomit-frame-pointer
+CPPFLAGS += -MMD -MP -Wall -Wno-alloc-size-larger-than -O3
+CPPFLAGS += -fno-exceptions -DNO_EXCEPTIONS
+CPPFLAGS += $(DEFINES)
+CPPFLAGS += $(INCLUDES)
 
 LFLAGS = -mthumb -mcpu=$(CPU) -mfpu=$(FPU) -mfloat-abi=$(FABI)
-LFLAGS+= -nostartfiles -static
-LFLAGS+= -Wl,--gc-sections,--entry,Reset_Handler,-Map,$(CONFIG)/$(TARGET).map
-LFLAGS+= -Wl,--start-group -lm -lc -lgcc -lnosys $(LIBS) -Wl,--end-group
+LFLAGS += -nostartfiles -static
+LFLAGS += -Wl,--gc-sections,--entry,Reset_Handler,-Map,$(CONFIG)/$(TARGET).map
+LFLAGS += -Wl,--start-group -lm -lc -lgcc -lnosys $(LIBS) -Wl,--end-group
 
 CPFLAGS = -Obinary
 ODFLAGS = -S
 
 #### Rules ####
-all: directories $(CONFIG)/$(TARGET).bin
+
+.PHONYY: setup all
+
+setup:
+	+@cd src/ai && echo building ai components... && CCPP='$(CCPP) $(CPPFLAGS)' make && echo finished building ai components! && cd -
+
+all: setup directories $(CONFIG)/$(TARGET).bin
 
 directories: $(CONFIG)
 
@@ -132,6 +151,10 @@ $(CONFIG):
 $(CONFIG)/%.o: %.c $(CONFIG)/%.d
 	@echo " Compiling $<" ;\
 	$(CC) -c $(CFLAGS) $< -o $@
+
+$(CONFIG)/%.o: %.cpp $(CONFIG)/%.d
+	@echo " Compiling $<" ;\
+	$(CCPP) -c $(CPPFLAGS) $< -o $@
 
 $(CONFIG)/%.o: %.s $(CONFIG)/%.d
 	@echo " Assembling $<" ;\
@@ -149,7 +172,9 @@ $(CONFIG)/$(TARGET).bin: $(CONFIG)/$(TARGET).axf
 
 clean:
 	@echo "Cleaning..." ;\
-	$(RM) -rf $(CONFIG)
+	$(RM) -rf $(CONFIG) ;\
+	cd src/ai && make clean && cd -
+
 $(CONFIG)/%.d: ;
 
 # Include JTag flashing Makefile

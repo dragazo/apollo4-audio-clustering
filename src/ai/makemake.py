@@ -62,10 +62,13 @@ assert sorted(set(src)) == sorted(src), 'found duplicate src entries'
 src.sort(key = lambda x: -os.path.getsize(x))
 
 with open('Makefile', 'w') as f:
-    cxx = f'g++ {" ".join(f"-I{x}" for x in inc)}'
+    f.write(f'CCPP ?= g++\n')
+
+    cxx = f'$(CCPP) {" ".join(f"-I{x}" for x in inc)}'
 
     all_objs = " ".join(f"{build_dir}/{x[:x.rfind('.')]}.o" for x in src)
-    f.write(f'test: {all_objs}\n\t{cxx} {all_objs} -o test\n')
+    f.write(f'all: {all_objs}\n')
+    f.write(f'test: all\n\t{cxx} {all_objs} -o test\n')
 
     f.write(f'clean:\n\trm -rf {build_dir}\n')
 
@@ -73,4 +76,4 @@ with open('Makefile', 'w') as f:
         src_dir = src[:src.rfind('/')]
         src_no_ext = src[:src.rfind('.')]
 
-        f.write(f'{build_dir}/{src_no_ext}.o: {src}\n\tmkdir -p {build_dir}/{src_dir} && {cxx} {src} -c -o build/{src_no_ext}.o\n')
+        f.write(f'{build_dir}/{src_no_ext}.o: {src}\n\t@echo " Compiling" {src} && mkdir -p {build_dir}/{src_dir} && {cxx} {src} -c -o build/{src_no_ext}.o\n')
