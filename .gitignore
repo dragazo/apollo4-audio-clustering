@@ -18,7 +18,6 @@
 
 # Libraries
 *.lib
-*.a
 *.la
 *.lo
 
@@ -56,6 +55,6 @@ dkms.conf
 
 # Compiled files
 __pycache__
-bin/
-out/
-build/
+/bin/
+/out/
+/build/
