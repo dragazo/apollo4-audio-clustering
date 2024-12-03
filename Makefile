@@ -123,6 +123,7 @@ CPPFLAGS = -mthumb -mcpu=$(CPU) -mfpu=$(FPU) -mfloat-abi=$(FABI)
 CPPFLAGS += -ffunction-sections -fdata-sections -fomit-frame-pointer
 CPPFLAGS += -MMD -MP -Wall -Wno-alloc-size-larger-than -O3
 CPPFLAGS += -fno-exceptions -DNO_EXCEPTIONS
+CPPFLAGS += -fno-rtti
 CPPFLAGS += $(DEFINES)
 CPPFLAGS += $(INCLUDES)
 

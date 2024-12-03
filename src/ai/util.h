@@ -71,15 +71,6 @@ void normalize_audio(Tensor<T, 1> &audio) {
 }
 
 template<typename T>
-std::vector<Tensor<T, 1>> overlapping_chunks(Tensor<T, 1> &audio, u32 size) {
-    std::vector<Tensor<T, 1>> res;
-    for (u32 i = 0; i * (size / 2) + size <= audio.template dim<0>(); ++i) {
-        res.emplace_back(&audio(i * (size / 2)), nullptr, +size);
-    }
-    return res;
-}
-
-template<typename T>
 void mul_hann_window(Tensor<T, 1> &x) {
     for (u32 i = 0; i < x.template dim<0>(); ++i) {
         T t = std::cos((T)PI * ((T)i - (T)x.template dim<0>() / 2) / (T)x.template dim<0>());
@@ -92,14 +83,24 @@ Tensor<complicate_t<T>, 2> spectrogram(Tensor<T, 1> &audio, u32 fft_size, T samp
     low_pass_filter(audio, sample_rate);
     normalize_audio(audio);
 
-    std::vector<Tensor<T, 1>> chunks = overlapping_chunks(audio, fft_size);
-    for (Tensor<T, 1> &x : chunks) {
-        x = static_cast<Tensor<T, 1>&&>(x).into_owned();
-        mul_hann_window(x);
+    const u32 chunks_cap = (audio.template dim<0>() - fft_size) / (fft_size / 2) + 2;
+    Tensor<T, 1> chunks[chunks_cap] = {};
+    u32 chunks_len = 0;
+    while (chunks_len * (fft_size / 2) + fft_size <= audio.template dim<0>()) {
+        #ifndef NO_EXCEPTIONS
+        if (chunks_len >= chunks_cap) throw std::runtime_error("chunks overflow");
+        #endif
+        chunks[chunks_len] = Tensor<T, 1> { &audio(chunks_len * (fft_size / 2)), nullptr, +fft_size };
+        ++chunks_len;
     }
 
-    Tensor<complicate_t<T>, 2> res { new complicate_t<T>[chunks.size() * (fft_size / 2)], [](auto *v) { delete[] v; }, chunks.size(), fft_size / 2 };
-    for (u32 i = 0; i < chunks.size(); ++i) {
+    for (u32 i = 0; i < chunks_len; ++i) {
+        chunks[i] = static_cast<Tensor<T, 1>&&>(chunks[i]).into_owned();
+        mul_hann_window(chunks[i]);
+    }
+
+    Tensor<complicate_t<T>, 2> res { new complicate_t<T>[chunks_len * (fft_size / 2)], [](auto *v) { delete[] v; }, chunks_len, fft_size / 2 };
+    for (u32 i = 0; i < chunks_len; ++i) {
         Tensor<complicate_t<T>, 1> F = fft(chunks[i]);
         for (u32 j = 0; j < fft_size / 2; ++j) res(i, j) = F(j);
     }

@@ -70,7 +70,7 @@ with open('Makefile', 'w') as f:
     f.write(f'all: {all_objs}\n')
     f.write(f'test: all\n\t{cxx} {all_objs} -o test\n')
 
-    f.write(f'clean:\n\trm -rf {build_dir}\n')
+    f.write(f'clean:\n\trm -rf {build_dir} test\n')
 
     for src in src:
         src_dir = src[:src.rfind('/')]

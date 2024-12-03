@@ -171,39 +171,6 @@ int main() {
         throw;
     })
 
-    TRY { // overlapping_chunks
-        f32 sig_raw[] = {1, 2, 3, 4, 5, 6, 2, 3, 8, 1};
-        Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
-
-        auto chunks = overlapping_chunks(sig, 4);
-
-        assert(chunks.size() == 4);
-        assert(chunks[0].dim<0>() == 4);
-        assert(std::abs(chunks[0](0) - 1) < 0.01);
-        assert(std::abs(chunks[0](1) - 2) < 0.01);
-        assert(std::abs(chunks[0](2) - 3) < 0.01);
-        assert(std::abs(chunks[0](3) - 4) < 0.01);
-        assert(chunks[1].dim<0>() == 4);
-        assert(std::abs(chunks[1](0) - 3) < 0.01);
-        assert(std::abs(chunks[1](1) - 4) < 0.01);
-        assert(std::abs(chunks[1](2) - 5) < 0.01);
-        assert(std::abs(chunks[1](3) - 6) < 0.01);
-        assert(chunks[2].dim<0>() == 4);
-        assert(std::abs(chunks[2](0) - 5) < 0.01);
-        assert(std::abs(chunks[2](1) - 6) < 0.01);
-        assert(std::abs(chunks[2](2) - 2) < 0.01);
-        assert(std::abs(chunks[2](3) - 3) < 0.01);
-        assert(chunks[3].dim<0>() == 4);
-        assert(std::abs(chunks[3](0) - 2) < 0.01);
-        assert(std::abs(chunks[3](1) - 3) < 0.01);
-        assert(std::abs(chunks[3](2) - 8) < 0.01);
-        assert(std::abs(chunks[3](3) - 1) < 0.01);
-
-    } CATCH({
-        std::cout << "!!!! overlapping_chunks error: " << x.what() << '\n';
-        throw;
-    })
-
     TRY { // mul_hann_window
         f32 sig_raw[] = {1, 1, 1, 1, 2, 1, 1, 1, 1, 3};
         Tensor<f32, 1> sig { sig_raw, nullptr, sizeof(sig_raw) / sizeof(*sig_raw) };
