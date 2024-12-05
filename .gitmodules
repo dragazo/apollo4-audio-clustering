@@ -1,6 +1,6 @@
 [submodule "src/ai/tflite-micro"]
 	path = src/ai/tflite-micro
-	url = git@github.com:tensorflow/tflite-micro.git
+	url = https://github.com/tensorflow/tflite-micro.git
 [submodule "src/ai/flatbuffers"]
 	path = src/ai/flatbuffers
 	url = https://github.com/google/flatbuffers.git
