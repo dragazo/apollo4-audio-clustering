@@ -3,15 +3,16 @@
 
 #include <vector>
 #include <cmath>
+#include <cstring>
 
 #include "./tensor.h"
 
 #define PI 3.14159265358979323846
 
-void *operator new(std::size_t s) noexcept {
+void *operator new(std::size_t s) noexcept(noexcept(operator new(1))) {
     return std::malloc(s);
 }
-void *operator new[](std::size_t s) noexcept {
+void *operator new[](std::size_t s) noexcept(noexcept(operator new[](1))) {
     return std::malloc(s);
 }
 
@@ -84,7 +85,8 @@ Tensor<complicate_t<T>, 2> spectrogram(Tensor<T, 1> &audio, u32 fft_size, T samp
     normalize_audio(audio);
 
     const u32 chunks_cap = (audio.template dim<0>() - fft_size) / (fft_size / 2) + 2;
-    Tensor<T, 1> chunks[chunks_cap] = {};
+    Tensor<T, 1> chunks[chunks_cap];
+    std::memset(&chunks, 0, sizeof(chunks));
     u32 chunks_len = 0;
     while (chunks_len * (fft_size / 2) + fft_size <= audio.template dim<0>()) {
         #ifndef NO_EXCEPTIONS
