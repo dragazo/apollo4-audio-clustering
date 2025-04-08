@@ -58,3 +58,8 @@ __pycache__
 /bin/
 /out/
 /build/
+
+*.axf
+*.bin
+*.lst
+*.size

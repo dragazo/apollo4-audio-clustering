@@ -38,6 +38,7 @@ STARTUP_FILE := ../AmbiqSDK/bsp/$(BSP)/linker/startup_gcc.c
 
 #### Required Executables ####
 CC = $(TOOLCHAIN)-gcc
+CCPP = $(TOOLCHAIN)-g++
 GCC = $(TOOLCHAIN)-gcc
 CPP = $(TOOLCHAIN)-cpp
 LD = $(TOOLCHAIN)-ld
@@ -111,7 +112,7 @@ SRC += system.c
 .PRECIOUS: $(CONFIG)/%.axf
 .SECONDEXPANSION:
 
-all:
+all: setup
 	$(error Make targets include: full logging rtc_set rtc system)
 
 # TODO: Create separate targets for non-flashing versions
@@ -124,7 +125,8 @@ endif
 
 full: TARGET = TestFull
 full: SRC += main.c
-full: $(CONFIG) $(CONFIG)/main.o $(CONFIG)/$$(TARGET).bin program
+full: SRC += ai.cpp
+full: setup $(CONFIG) $(CONFIG)/main.o $(CONFIG)/ai.o $(CONFIG)/$$(TARGET).bin program
 
 logging: TARGET = TestLogging
 logging: SRC += test_logging.c
@@ -143,8 +145,18 @@ system: TARGET = TestSystem
 system: SRC += test_system.c
 system: $(CONFIG) $(CONFIG)/test_system.o $(CONFIG)/$$(TARGET).bin program
 
-OBJS = $(SRC:%.c=$(CONFIG)/%.o)
-DEPS = $(SRC:%.c=$(CONFIG)/%.d)
+CSRC = $(filter %.c,$(SRC))
+ASRC = $(filter %.s,$(SRC))
+CPPSRC = $(filter %.cpp,$(SRC))
+
+OBJS = $(CSRC:%.c=$(CONFIG)/%.o)
+OBJS += $(ASRC:%.s=$(CONFIG)/%.o)
+OBJS += $(CPPSRC:%.cpp=$(CONFIG)/%.o)
+OBJS += $(shell find ../src/ai/ -name '*.o')
+
+DEPS = $(CSRC:%.c=$(CONFIG)/%.d)
+DEPS += $(ASRC:%.s=$(CONFIG)/%.d)
+DEPS += $(CPPSRC:%.cpp=$(CONFIG)/%.d)
 
 LIBS  = ../AmbiqSDK/bsp/$(BSP)/gcc/bin/libam_bsp.a
 LIBS += ../AmbiqSDK/mcu/$(PART)/hal/mcu/gcc/bin/libam_hal.a
@@ -155,6 +167,14 @@ CFLAGS+= -MMD -MP -std=c99 -Wall -g -O0
 CFLAGS+= $(DEFINES)
 CFLAGS+= $(INCLUDES)
 
+CPPFLAGS = -mthumb -mcpu=$(CPU) -mfpu=$(FPU) -mfloat-abi=$(FABI)
+CPPFLAGS+= -ffunction-sections -fdata-sections -fomit-frame-pointer
+CPPFLAGS+= -MMD -MP -Wall -Wno-alloc-size-larger-than -O3
+CPPFLAGS+= -fno-exceptions -DNO_EXCEPTIONS
+CPPFLAGS+= -fno-rtti
+CPPFLAGS+= $(DEFINES)
+CPPFLAGS+= $(INCLUDES)
+
 LFLAGS = -mthumb -mcpu=$(CPU) -mfpu=$(FPU) -mfloat-abi=$(FABI)
 LFLAGS+= -nostartfiles -static
 LFLAGS+= -Wl,--gc-sections,--entry,Reset_Handler,-Map,$(CONFIG)/$(TARGET).map
@@ -163,12 +183,19 @@ LFLAGS+= -Wl,--start-group -lm -lc -lgcc -lnosys $(LIBS) -Wl,--end-group
 CPFLAGS = -Obinary
 ODFLAGS = -S
 
+setup:
+	+@cd ../src/ai && echo building ai components... && CCPP='$(CCPP) $(CPPFLAGS)' make && echo finished building ai components! && cd -
+
 $(CONFIG):
 	@mkdir -p $@
 
 $(CONFIG)/%.o: %.c $(CONFIG)/%.d
 	@echo " Compiling $<" ;\
 	$(CC) -c $(CFLAGS) $< -o $@
+
+$(CONFIG)/%.o: %.cpp $(CONFIG)/%.d
+	@echo " Compiling $<" ;\
+	$(CCPP) -c $(CPPFLAGS) $< -o $@
 
 $(CONFIG)/%.o: %.s $(CONFIG)/%.d
 	@echo " Assembling $<" ;\
@@ -186,7 +213,9 @@ $(CONFIG)/%.bin: $(CONFIG)/%.axf
 
 clean:
 	@echo "Cleaning..." ;\
-	$(RM) -rf $(CONFIG)
+	$(RM) -rf $(CONFIG) ;\
+	cd ../src/ai && make clean && cd -
+
 $(CONFIG)/%.d: ;
 
 # Include JTag flashing Makefile
