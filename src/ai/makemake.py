@@ -66,9 +66,9 @@ with open('Makefile', 'w') as f:
 
     cxx = f'$(CCPP) {" ".join(f"-I{x}" for x in inc)}'
 
-    all_objs = " ".join(f"{build_dir}/{x[:x.rfind('.')]}.o" for x in src)
+    all_objs = " ".join(f"{build_dir}/{x[:x.rfind('.')]}.o" for x in src if x != "test.cpp")
     f.write(f'all: {all_objs}\n')
-    f.write(f'test: all\n\t{cxx} {all_objs} -o test\n')
+    f.write(f'test: all {build_dir}/test.o\n\t{cxx} {build_dir}/test.o {all_objs} -o test\n')
 
     f.write(f'clean:\n\trm -rf {build_dir} test\n')
 
