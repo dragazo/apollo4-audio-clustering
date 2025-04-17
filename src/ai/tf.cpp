@@ -8,20 +8,28 @@ constexpr u32 tensor_arena_size = 284 * 1024;
 u8 tensor_arena[tensor_arena_size];
 
 Tensor<f32, 1> inference(const Tensor<f32, 2> &x) {
-    const tflite::Model *model = tflite::GetModel(model_tflite);
-    if (model->version() != TFLITE_SCHEMA_VERSION) THROW(std::runtime_error("wrong model schema version"));
+    static struct Cache {
+        const tflite::Model *model;
+        tflite::MicroMutableOpResolver<7> resolver;
+        char interpreter[sizeof(tflite::MicroInterpreter)];
+        Cache() {
+            model = tflite::GetModel(model_tflite);
+            if (model->version() != TFLITE_SCHEMA_VERSION) THROW(std::runtime_error("wrong model schema version"));
 
-    tflite::MicroMutableOpResolver<7> resolver;
-    if (resolver.AddQuantize() != kTfLiteOk) THROW(std::runtime_error("failed to add quantize op to resolver"));
-    if (resolver.AddReshape() != kTfLiteOk) THROW(std::runtime_error("failed to add reshape op to resolver"));
-    if (resolver.AddConv2D() != kTfLiteOk) THROW(std::runtime_error("failed to add conv2d op to resolver"));
-    if (resolver.AddTranspose() != kTfLiteOk) THROW(std::runtime_error("failed to add transpose op to resolver"));
-    if (resolver.AddLeakyRelu() != kTfLiteOk) THROW(std::runtime_error("failed to add leaky relu op to resolver"));
-    if (resolver.AddFullyConnected() != kTfLiteOk) THROW(std::runtime_error("failed to add fully connected op to resolver"));
-    if (resolver.AddDequantize() != kTfLiteOk) THROW(std::runtime_error("failed to add dequantize op to resolver"));
+            if (resolver.AddQuantize() != kTfLiteOk) THROW(std::runtime_error("failed to add quantize op to resolver"));
+            if (resolver.AddReshape() != kTfLiteOk) THROW(std::runtime_error("failed to add reshape op to resolver"));
+            if (resolver.AddConv2D() != kTfLiteOk) THROW(std::runtime_error("failed to add conv2d op to resolver"));
+            if (resolver.AddTranspose() != kTfLiteOk) THROW(std::runtime_error("failed to add transpose op to resolver"));
+            if (resolver.AddLeakyRelu() != kTfLiteOk) THROW(std::runtime_error("failed to add leaky relu op to resolver"));
+            if (resolver.AddFullyConnected() != kTfLiteOk) THROW(std::runtime_error("failed to add fully connected op to resolver"));
+            if (resolver.AddDequantize() != kTfLiteOk) THROW(std::runtime_error("failed to add dequantize op to resolver"));
 
-    tflite::MicroInterpreter interpreter { model, resolver, tensor_arena, tensor_arena_size };
-    if (interpreter.AllocateTensors() != kTfLiteOk) THROW(std::runtime_error("failed to allocate tensors"));
+            new (interpreter) tflite::MicroInterpreter { model, resolver, tensor_arena, tensor_arena_size };
+            if (reinterpret_cast<tflite::MicroInterpreter*>(interpreter)->AllocateTensors() != kTfLiteOk) THROW(std::runtime_error("failed to allocate tensors"));
+        }
+    } cache;
+
+    tflite::MicroInterpreter &interpreter = *reinterpret_cast<tflite::MicroInterpreter*>(cache.interpreter);
 
     TfLiteTensor *input = interpreter.input(0);
     TfLiteTensor *output = interpreter.output(0);
