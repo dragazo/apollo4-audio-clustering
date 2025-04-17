@@ -90,9 +90,7 @@ public:
         u32 p = 0;
         u32 s = 1;
         for (u32 i = D; i-- > 0; ) {
-            #ifndef NO_EXCEPTIONS
-            if (pos[i] >= dims[i]) throw std::runtime_error("index out of bounds");
-            #endif
+            if (pos[i] >= dims[i]) THROW(std::runtime_error("index out of bounds"));
 
             p += pos[i] * s;
             s *= dims[i];
@@ -111,9 +109,7 @@ public:
     }
 
     T max() {
-        #ifndef NO_EXCEPTIONS
-        if (size() <= 0) throw std::runtime_error("attempt to get max of empty tensor");
-        #endif
+        if (size() <= 0) THROW(std::runtime_error("attempt to get max of empty tensor"));
 
         T res = data[0];
         for (u32 i = size(); i-- > 0; ) res = std::max(res, data[i]);
@@ -121,7 +117,8 @@ public:
     }
 
     T min() {
-        if (size() <= 0) throw std::runtime_error("attempt to get min of empty tensor");
+        if (size() <= 0) THROW(std::runtime_error("attempt to get min of empty tensor"));
+
         T res = data[0];
         for (u32 i = size(); i-- > 0; ) res = std::min(res, data[i]);
         return res;

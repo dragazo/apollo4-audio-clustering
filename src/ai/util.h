@@ -89,9 +89,7 @@ Tensor<complicate_t<T>, 2> spectrogram(Tensor<T, 1> &audio, u32 fft_size, T samp
     std::memset(&chunks, 0, sizeof(chunks));
     u32 chunks_len = 0;
     while (chunks_len * (fft_size / 2) + fft_size <= audio.template dim<0>()) {
-        #ifndef NO_EXCEPTIONS
-        if (chunks_len >= chunks_cap) throw std::runtime_error("chunks overflow");
-        #endif
+        if (chunks_len >= chunks_cap) THROW(std::runtime_error("chunks overflow"));
         chunks[chunks_len] = Tensor<T, 1> { &audio(chunks_len * (fft_size / 2)), nullptr, +fft_size };
         ++chunks_len;
     }
@@ -149,9 +147,7 @@ template<typename T> Tensor<T, 2> transpose(const Tensor<T, 2> &x) {
 }
 
 template<typename T> Tensor<T, 2> matmul(const Tensor<T, 2> &a, const Tensor<T, 2> &b) {
-    #ifndef NO_EXCEPTIONS
-    if (a.template dim<1>() != b.template dim<0>()) throw std::runtime_error("matmul incompatible sizes");
-    #endif
+    if (a.template dim<1>() != b.template dim<0>()) THROW(std::runtime_error("matmul incompatible sizes"));
 
     Tensor<T, 2> res { new T[a.template dim<0>() * b.template dim<1>()], [](auto *v) { delete[] v; }, a.template dim<0>(), b.template dim<1>() };
     for (u32 i = 0; i < res.template dim<0>(); ++i) {
@@ -209,9 +205,7 @@ template<typename T, std::enable_if_t<std::is_same<T, simplify_t<T>>::value, int
 Tensor<T, 2> mfcc_spectrogram_for_learning(Tensor<T, 1> &signal, T sample_rate) {
     u32 fft_size = (u32)(i32)((T)30 / (T)1000 * sample_rate);
 
-    #ifndef NO_EXCEPTIONS
-    if ((i32)fft_size <= 0) throw std::runtime_error("mfcc_spectrogram_for_learning: input too small!");
-    #endif
+    if ((i32)fft_size <= 0) THROW(std::runtime_error("mfcc_spectrogram_for_learning: input too small!"));
 
     Tensor<T, 2> s = mfcc_spectrogram(signal, fft_size, sample_rate, 65, 65);
     s.maximum(0);
