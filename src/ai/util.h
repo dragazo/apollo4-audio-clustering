@@ -207,11 +207,15 @@ Tensor<T, 2> mfcc_spectrogram_for_learning(Tensor<T, 1> &signal, T sample_rate) 
 
     if ((i32)fft_size <= 0) THROW(std::runtime_error("mfcc_spectrogram_for_learning: input too small!"));
 
-    Tensor<T, 2> s = mfcc_spectrogram(signal, fft_size, sample_rate, 65, 65);
-    s.maximum(0);
-    s.minimum(s.mean() + 1 * s.std());
-    T m = s.max();
-    if (m > 0) s /= m;
+    Tensor<T, 2> s = mfcc_spectrogram(signal, fft_size, sample_rate, 32, 16);
+
+    T std = s.std();
+
+    s -= s.mean();
+    if (std > (T)0) s /= std;
+    s.maximum((T)(-1));
+    s.minimum((T)(+1));
+
     return s;
 }
 

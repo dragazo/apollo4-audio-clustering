@@ -148,6 +148,11 @@ public:
         return std::sqrt(var());
     }
 
+    Tensor &operator-=(T v) & {
+        for (u32 i = size(); i-- > 0; ) data[i] -= v;
+        return *this;
+    }
+
     Tensor &operator/=(T v) & {
         for (u32 i = size(); i-- > 0; ) data[i] /= v;
         return *this;
