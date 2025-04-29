@@ -1316,12 +1316,8 @@ int main() {
         { const float p[2] = {-3.4, 2.2}; assert(f.insert(p) == false); }
         { const float means[3][2] = {{-4, 1}, {-4, 1.8}, {-3.2, 2.1}}; const float weights[3] = {1, 1, 3}; check_filter(); }
 
-        for (auto r : f.inspect_means()) {
-            std::cout << r[0] << ' ' << r[1] << '\n';
-        }
-
-        { const float p[2] = {-4.1, 1.5}; assert(f.insert(p) == false); }
-        { const float means[3][2] = {{0, 0}, {-3.2, 2.1}, {4.033333, 1.433333}}; const float weights[3] = {0, 3, 2}; check_filter(); }
+        { const float p[2] = {-4.1, 1.41}; assert(f.insert(p) == false); }
+        { const float means[3][2] = {{0, 0}, {-3.2, 2.1}, {-4.033333, 1.4033333}}; const float weights[3] = {0, 3, 3}; check_filter(); }
     } CATCH({
         std::cout << "!!!! filter error: " << x.what() << '\n';
         throw;
