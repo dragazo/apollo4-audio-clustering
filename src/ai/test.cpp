@@ -1,7 +1,9 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
+#include <cstring>
 
+#include "./filter.h"
 #include "./tensor.h"
 #include "./util.h"
 #include "./tf.h"
@@ -339,117 +341,117 @@ int main() {
 
         Tensor<f64, 2> x = mfcc_spectrogram_for_learning(sig, 200.0);
         assert(x.dim<0>() == 16 && x.dim<1>() == 7);
-        assert(std::abs(x( 0, 0) - -0.94827885) < 0.0001);
+        assert(std::abs(x( 0, 0) - -1.00000000) < 0.0001);
         assert(std::abs(x( 0, 1) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 0, 2) - -0.87531578) < 0.0001);
+        assert(std::abs(x( 0, 2) - -1.00000000) < 0.0001);
         assert(std::abs(x( 0, 3) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 0, 4) - -0.42293899) < 0.0001);
-        assert(std::abs(x( 0, 5) - -0.83406925) < 0.0001);
+        assert(std::abs(x( 0, 4) - -0.75993585) < 0.0001);
+        assert(std::abs(x( 0, 5) - -1.00000000) < 0.0001);
         assert(std::abs(x( 0, 6) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 1, 0) - +0.58378310) < 0.0001);
-        assert(std::abs(x( 1, 1) - +0.96011322) < 0.0001);
-        assert(std::abs(x( 1, 2) - +0.71754888) < 0.0001);
-        assert(std::abs(x( 1, 3) - +0.74502161) < 0.0001);
-        assert(std::abs(x( 1, 4) - +0.52910089) < 0.0001);
-        assert(std::abs(x( 1, 5) - +0.59690257) < 0.0001);
-        assert(std::abs(x( 1, 6) - +0.69265642) < 0.0001);
-        assert(std::abs(x( 2, 0) - +0.74046515) < 0.0001);
+        assert(std::abs(x( 1, 0) - +0.32814359) < 0.0001);
+        assert(std::abs(x( 1, 1) - +0.56782122) < 0.0001);
+        assert(std::abs(x( 1, 2) - +0.43390627) < 0.0001);
+        assert(std::abs(x( 1, 3) - +0.41956231) < 0.0001);
+        assert(std::abs(x( 1, 4) - +0.32935231) < 0.0001);
+        assert(std::abs(x( 1, 5) - +0.34708668) < 0.0001);
+        assert(std::abs(x( 1, 6) - +0.37827231) < 0.0001);
+        assert(std::abs(x( 2, 0) - +0.84383553) < 0.0001);
         assert(std::abs(x( 2, 1) - +1.00000000) < 0.0001);
-        assert(std::abs(x( 2, 2) - +0.69182390) < 0.0001);
-        assert(std::abs(x( 2, 3) - +0.98216995) < 0.0001);
-        assert(std::abs(x( 2, 4) - +0.39024436) < 0.0001);
-        assert(std::abs(x( 2, 5) - +0.66432668) < 0.0001);
+        assert(std::abs(x( 2, 2) - +0.84950922) < 0.0001);
+        assert(std::abs(x( 2, 3) - +1.00000000) < 0.0001);
+        assert(std::abs(x( 2, 4) - +0.63683697) < 0.0001);
+        assert(std::abs(x( 2, 5) - +0.80492341) < 0.0001);
         assert(std::abs(x( 2, 6) - +1.00000000) < 0.0001);
-        assert(std::abs(x( 3, 0) - -0.94296422) < 0.0001);
+        assert(std::abs(x( 3, 0) - -0.67704291) < 0.0001);
         assert(std::abs(x( 3, 1) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 3, 2) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 3, 3) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 3, 4) - -0.83672797) < 0.0001);
-        assert(std::abs(x( 3, 5) - -0.96845264) < 0.0001);
-        assert(std::abs(x( 3, 6) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 4, 0) - +0.86108209) < 0.0001);
+        assert(std::abs(x( 3, 2) - -0.84260359) < 0.0001);
+        assert(std::abs(x( 3, 3) - -0.90166757) < 0.0001);
+        assert(std::abs(x( 3, 4) - -0.57848020) < 0.0001);
+        assert(std::abs(x( 3, 5) - -0.68732554) < 0.0001);
+        assert(std::abs(x( 3, 6) - -0.83677726) < 0.0001);
+        assert(std::abs(x( 4, 0) - +1.00000000) < 0.0001);
         assert(std::abs(x( 4, 1) - +1.00000000) < 0.0001);
-        assert(std::abs(x( 4, 2) - +0.80375537) < 0.0001);
+        assert(std::abs(x( 4, 2) - +0.90448155) < 0.0001);
         assert(std::abs(x( 4, 3) - +1.00000000) < 0.0001);
-        assert(std::abs(x( 4, 4) - +0.44832521) < 0.0001);
-        assert(std::abs(x( 4, 5) - +0.77134818) < 0.0001);
+        assert(std::abs(x( 4, 4) - +0.68308297) < 0.0001);
+        assert(std::abs(x( 4, 5) - +0.92212066) < 0.0001);
         assert(std::abs(x( 4, 6) - +1.00000000) < 0.0001);
-        assert(std::abs(x( 5, 0) - +0.49644319) < 0.0001);
-        assert(std::abs(x( 5, 1) - +0.80941927) < 0.0001);
-        assert(std::abs(x( 5, 2) - +0.60768990) < 0.0001);
-        assert(std::abs(x( 5, 3) - +0.63053768) < 0.0001);
-        assert(std::abs(x( 5, 4) - +0.45096656) < 0.0001);
-        assert(std::abs(x( 5, 5) - +0.50735403) < 0.0001);
-        assert(std::abs(x( 5, 6) - +0.58698802) < 0.0001);
+        assert(std::abs(x( 5, 0) - +0.98615626) < 0.0001);
+        assert(std::abs(x( 5, 1) - +1.00000000) < 0.0001);
+        assert(std::abs(x( 5, 2) - +0.98411465) < 0.0001);
+        assert(std::abs(x( 5, 3) - +1.00000000) < 0.0001);
+        assert(std::abs(x( 5, 4) - +0.73486311) < 0.0001);
+        assert(std::abs(x( 5, 5) - +0.93733787) < 0.0001);
+        assert(std::abs(x( 5, 6) - +1.00000000) < 0.0001);
         assert(std::abs(x( 6, 0) - -1.00000000) < 0.0001);
         assert(std::abs(x( 6, 1) - -1.00000000) < 0.0001);
         assert(std::abs(x( 6, 2) - -1.00000000) < 0.0001);
         assert(std::abs(x( 6, 3) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 6, 4) - -0.62171667) < 0.0001);
+        assert(std::abs(x( 6, 4) - -0.96596641) < 0.0001);
         assert(std::abs(x( 6, 5) - -1.00000000) < 0.0001);
         assert(std::abs(x( 6, 6) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 7, 0) - +0.66612660) < 0.0001);
-        assert(std::abs(x( 7, 1) - +1.00000000) < 0.0001);
-        assert(std::abs(x( 7, 2) - +0.82112321) < 0.0001);
-        assert(std::abs(x( 7, 3) - +0.85295631) < 0.0001);
-        assert(std::abs(x( 7, 4) - +0.60276542) < 0.0001);
-        assert(std::abs(x( 7, 5) - +0.68132834) < 0.0001);
-        assert(std::abs(x( 7, 6) - +0.79227991) < 0.0001);
-        assert(std::abs(x( 8, 0) - +0.61334287) < 0.0001);
-        assert(std::abs(x( 8, 1) - +0.89347228) < 0.0001);
-        assert(std::abs(x( 8, 2) - +0.57385553) < 0.0001);
-        assert(std::abs(x( 8, 3) - +0.80956065) < 0.0001);
-        assert(std::abs(x( 8, 4) - +0.32903098) < 0.0001);
-        assert(std::abs(x( 8, 5) - +0.55153308) < 0.0001);
-        assert(std::abs(x( 8, 6) - +0.82425597) < 0.0001);
-        assert(std::abs(x( 9, 0) - -0.93325722) < 0.0001);
+        assert(std::abs(x( 7, 0) - -0.06985918) < 0.0001);
+        assert(std::abs(x( 7, 1) - +0.07773358) < 0.0001);
+        assert(std::abs(x( 7, 2) - +0.07155896) < 0.0001);
+        assert(std::abs(x( 7, 3) - -0.05536636) < 0.0001);
+        assert(std::abs(x( 7, 4) - +0.06453229) < 0.0001);
+        assert(std::abs(x( 7, 5) - -0.01892663) < 0.0001);
+        assert(std::abs(x( 7, 6) - -0.11023927) < 0.0001);
+        assert(std::abs(x( 8, 0) - +0.57514501) < 0.0001);
+        assert(std::abs(x( 8, 1) - +0.93466739) < 0.0001);
+        assert(std::abs(x( 8, 2) - +0.70293651) < 0.0001);
+        assert(std::abs(x( 8, 3) - +0.72918224) < 0.0001);
+        assert(std::abs(x( 8, 4) - +0.52290502) < 0.0001);
+        assert(std::abs(x( 8, 5) - +0.58767853) < 0.0001);
+        assert(std::abs(x( 8, 6) - +0.67915581) < 0.0001);
+        assert(std::abs(x( 9, 0) - -1.00000000) < 0.0001);
         assert(std::abs(x( 9, 1) - -1.00000000) < 0.0001);
         assert(std::abs(x( 9, 2) - -1.00000000) < 0.0001);
         assert(std::abs(x( 9, 3) - -1.00000000) < 0.0001);
-        assert(std::abs(x( 9, 4) - -0.82804409) < 0.0001);
-        assert(std::abs(x( 9, 5) - -0.95850017) < 0.0001);
+        assert(std::abs(x( 9, 4) - -0.76221849) < 0.0001);
+        assert(std::abs(x( 9, 5) - -0.98397399) < 0.0001);
         assert(std::abs(x( 9, 6) - -1.00000000) < 0.0001);
-        assert(std::abs(x(10, 0) - +0.97403208) < 0.0001);
-        assert(std::abs(x(10, 1) - +1.00000000) < 0.0001);
-        assert(std::abs(x(10, 2) - +0.90857197) < 0.0001);
-        assert(std::abs(x(10, 3) - +1.00000000) < 0.0001);
-        assert(std::abs(x(10, 4) - +0.50271418) < 0.0001);
-        assert(std::abs(x(10, 5) - +0.87156693) < 0.0001);
-        assert(std::abs(x(10, 6) - +1.00000000) < 0.0001);
-        assert(std::abs(x(11, 0) - +0.40494800) < 0.0001);
-        assert(std::abs(x(11, 1) - +0.65155590) < 0.0001);
-        assert(std::abs(x(11, 2) - +0.49260428) < 0.0001);
-        assert(std::abs(x(11, 3) - +0.51060706) < 0.0001);
-        assert(std::abs(x(11, 4) - +0.36911492) < 0.0001);
-        assert(std::abs(x(11, 5) - +0.41354514) < 0.0001);
-        assert(std::abs(x(11, 6) - +0.47629233) < 0.0001);
-        assert(std::abs(x(12, 0) - -1.00000000) < 0.0001);
+        assert(std::abs(x(10, 0) - +0.72852866) < 0.0001);
+        assert(std::abs(x(10, 1) - +0.82772066) < 0.0001);
+        assert(std::abs(x(10, 2) - +0.63423701) < 0.0001);
+        assert(std::abs(x(10, 3) - +0.84201319) < 0.0001);
+        assert(std::abs(x(10, 4) - +0.48716678) < 0.0001);
+        assert(std::abs(x(10, 5) - +0.66530579) < 0.0001);
+        assert(std::abs(x(10, 6) - +0.87821487) < 0.0001);
+        assert(std::abs(x(11, 0) - +1.00000000) < 0.0001);
+        assert(std::abs(x(11, 1) - +1.00000000) < 0.0001);
+        assert(std::abs(x(11, 2) - +1.00000000) < 0.0001);
+        assert(std::abs(x(11, 3) - +1.00000000) < 0.0001);
+        assert(std::abs(x(11, 4) - +1.00000000) < 0.0001);
+        assert(std::abs(x(11, 5) - +1.00000000) < 0.0001);
+        assert(std::abs(x(11, 6) - +1.00000000) < 0.0001);
+        assert(std::abs(x(12, 0) - -0.84080927) < 0.0001);
         assert(std::abs(x(12, 1) - -1.00000000) < 0.0001);
-        assert(std::abs(x(12, 2) - -1.00000000) < 0.0001);
+        assert(std::abs(x(12, 2) - -0.93947935) < 0.0001);
         assert(std::abs(x(12, 3) - -1.00000000) < 0.0001);
-        assert(std::abs(x(12, 4) - -0.61178085) < 0.0001);
-        assert(std::abs(x(12, 5) - -1.00000000) < 0.0001);
+        assert(std::abs(x(12, 4) - -0.65290837) < 0.0001);
+        assert(std::abs(x(12, 5) - -0.82203136) < 0.0001);
         assert(std::abs(x(12, 6) - -1.00000000) < 0.0001);
-        assert(std::abs(x(13, 0) - +0.74268067) < 0.0001);
-        assert(std::abs(x(13, 1) - +1.00000000) < 0.0001);
-        assert(std::abs(x(13, 2) - +0.91741541) < 0.0001);
-        assert(std::abs(x(13, 3) - +0.95330231) < 0.0001);
-        assert(std::abs(x(13, 4) - +0.67125073) < 0.0001);
-        assert(std::abs(x(13, 5) - +0.75981829) < 0.0001);
-        assert(std::abs(x(13, 6) - +0.88489904) < 0.0001);
-        assert(std::abs(x(14, 0) - +0.48093949) < 0.0001);
-        assert(std::abs(x(14, 1) - +0.69343178) < 0.0001);
-        assert(std::abs(x(14, 2) - +0.45098636) < 0.0001);
-        assert(std::abs(x(14, 3) - +0.62978057) < 0.0001);
-        assert(std::abs(x(14, 4) - +0.26527459) < 0.0001);
-        assert(std::abs(x(14, 5) - +0.43405365) < 0.0001);
-        assert(std::abs(x(14, 6) - +0.64092771) < 0.0001);
-        assert(std::abs(x(15, 0) - -0.91393671) < 0.0001);
+        assert(std::abs(x(13, 0) - -0.03922872) < 0.0001);
+        assert(std::abs(x(13, 1) - +0.01060725) < 0.0001);
+        assert(std::abs(x(13, 2) - +0.02560493) < 0.0001);
+        assert(std::abs(x(13, 3) - -0.04369540) < 0.0001);
+        assert(std::abs(x(13, 4) - +0.03607560) < 0.0001);
+        assert(std::abs(x(13, 5) - -0.01323825) < 0.0001);
+        assert(std::abs(x(13, 6) - -0.06881732) < 0.0001);
+        assert(std::abs(x(14, 0) - +0.58787387) < 0.0001);
+        assert(std::abs(x(14, 1) - +1.00000000) < 0.0001);
+        assert(std::abs(x(14, 2) - +0.75698404) < 0.0001);
+        assert(std::abs(x(14, 3) - +0.75867745) < 0.0001);
+        assert(std::abs(x(14, 4) - +0.55945642) < 0.0001);
+        assert(std::abs(x(14, 5) - +0.61231063) < 0.0001);
+        assert(std::abs(x(14, 6) - +0.69257938) < 0.0001);
+        assert(std::abs(x(15, 0) - -1.00000000) < 0.0001);
         assert(std::abs(x(15, 1) - -1.00000000) < 0.0001);
         assert(std::abs(x(15, 2) - -1.00000000) < 0.0001);
         assert(std::abs(x(15, 3) - -1.00000000) < 0.0001);
-        assert(std::abs(x(15, 4) - -0.81075995) < 0.0001);
-        assert(std::abs(x(15, 5) - -0.93869109) < 0.0001);
+        assert(std::abs(x(15, 4) - -0.93687467) < 0.0001);
+        assert(std::abs(x(15, 5) - -1.00000000) < 0.0001);
         assert(std::abs(x(15, 6) - -1.00000000) < 0.0001);
     } CATCH({
         std::cout << "!!!! mfcc spectrogram for learning error: " << x.what() << '\n';
@@ -1265,24 +1267,63 @@ int main() {
         Tensor<f32, 1> embed = inference(sig_prep);
         assert(embed.dim<0>() == 16);
 
-        assert(std::abs(embed( 0) - +0.42356920) < 0.028);
-        assert(std::abs(embed( 1) - -0.00588988) < 0.028);
-        assert(std::abs(embed( 2) - +0.00338129) < 0.028);
-        assert(std::abs(embed( 3) - +0.01364951) < 0.028);
-        assert(std::abs(embed( 4) - +0.02756233) < 0.028);
-        assert(std::abs(embed( 5) - -0.00364426) < 0.028);
-        assert(std::abs(embed( 6) - +0.03169870) < 0.028);
-        assert(std::abs(embed( 7) - -0.05496707) < 0.028);
-        assert(std::abs(embed( 8) - +0.02420937) < 0.028);
-        assert(std::abs(embed( 9) - +0.01244469) < 0.028);
-        assert(std::abs(embed(10) - +0.05004972) < 0.028);
-        assert(std::abs(embed(11) - -0.01031907) < 0.028);
-        assert(std::abs(embed(12) - -0.79708958) < 0.028);
-        assert(std::abs(embed(13) - +0.03444605) < 0.028);
-        assert(std::abs(embed(14) - -0.02109118) < 0.028);
-        assert(std::abs(embed(15) - +0.04015120) < 0.028);
+        assert(std::abs(embed( 0) - +0.42356920) < 0.085);
+        assert(std::abs(embed( 1) - -0.00588988) < 0.085);
+        assert(std::abs(embed( 2) - +0.00338129) < 0.085);
+        assert(std::abs(embed( 3) - +0.01364951) < 0.085);
+        assert(std::abs(embed( 4) - +0.02756233) < 0.085);
+        assert(std::abs(embed( 5) - -0.00364426) < 0.085);
+        assert(std::abs(embed( 6) - +0.03169870) < 0.085);
+        assert(std::abs(embed( 7) - -0.05496707) < 0.085);
+        assert(std::abs(embed( 8) - +0.02420937) < 0.085);
+        assert(std::abs(embed( 9) - +0.01244469) < 0.085);
+        assert(std::abs(embed(10) - +0.05004972) < 0.085);
+        assert(std::abs(embed(11) - -0.01031907) < 0.085);
+        assert(std::abs(embed(12) - -0.79708958) < 0.085);
+        assert(std::abs(embed(13) - +0.03444605) < 0.085);
+        assert(std::abs(embed(14) - -0.02109118) < 0.085);
+        assert(std::abs(embed(15) - +0.04015120) < 0.085);
     } CATCH({
         std::cout << "!!!! inference error: " << x.what() << '\n';
+        throw;
+    })
+
+    TRY { // filter
+        #define check_filter() { for (int i = 0; i < 3; ++i) { for (int j = 0; j < 2; ++j) { assert(std::abs(f.inspect_means()[i][j] - means[i][j]) < 0.0001); } assert(std::abs(f.inspect_weights()[i] - weights[i]) < 0.0001); } }
+
+        // for (auto r : f.inspect_means()) {
+        //     std::cout << r[0] << ' ' << r[1] << '\n';
+        // }
+
+        Filter<float, 2, 3> f { 0.5, 5 };
+        { const float means[3][2] = {{0, 0}, {0, 0}, {0, 0}}; const float weights[3] = {0, 0, 0}; check_filter(); }
+
+        { const float p[2] = {1, 2}; assert(f.insert(p) == true); }
+        { const float means[3][2] = {{0, 0}, {0, 0}, {1, 2}}; const float weights[3] = {0, 0, 1}; check_filter(); }
+
+        { const float p[2] = {-3, 2}; assert(f.insert(p) == true); }
+        { const float means[3][2] = {{0, 0}, {1, 2}, {-3, 2}}; const float weights[3] = {0, 1, 1}; check_filter(); }
+
+        { const float p[2] = {-3.2, 2.1}; assert(f.insert(p) == false); }
+        { const float means[3][2] = {{0, 0}, {1, 2}, {-3.1, 2.05}}; const float weights[3] = {0, 1, 2}; check_filter(); }
+
+        { const float p[2] = {-4, 1}; assert(f.insert(p) == true); }
+        { const float means[3][2] = {{1, 2}, {-3.1, 2.05}, {-4, 1}}; const float weights[3] = {1, 2, 1}; check_filter(); }
+
+        { const float p[2] = {-4, 1.8}; assert(f.insert(p) == true); }
+        { const float means[3][2] = {{-3.1, 2.05}, {-4, 1}, {-4, 1.8}}; const float weights[3] = {2, 1, 1}; check_filter(); }
+
+        { const float p[2] = {-3.4, 2.2}; assert(f.insert(p) == false); }
+        { const float means[3][2] = {{-4, 1}, {-4, 1.8}, {-3.2, 2.1}}; const float weights[3] = {1, 1, 3}; check_filter(); }
+
+        for (auto r : f.inspect_means()) {
+            std::cout << r[0] << ' ' << r[1] << '\n';
+        }
+
+        { const float p[2] = {-4.1, 1.5}; assert(f.insert(p) == false); }
+        { const float means[3][2] = {{0, 0}, {-3.2, 2.1}, {4.033333, 1.433333}}; const float weights[3] = {0, 3, 2}; check_filter(); }
+    } CATCH({
+        std::cout << "!!!! filter error: " << x.what() << '\n';
         throw;
     })
 
