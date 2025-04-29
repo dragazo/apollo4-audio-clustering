@@ -4,7 +4,7 @@
 #include <cstring>
 #include <algorithm>
 
-template<typename T, int E, int N>
+template<typename T, int N, int E>
 class Filter {
 private:
     T means[N][E];

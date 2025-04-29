@@ -1295,7 +1295,7 @@ int main() {
         //     std::cout << r[0] << ' ' << r[1] << '\n';
         // }
 
-        Filter<float, 2, 3> f { 0.5, 5 };
+        Filter<float, 3, 2> f { 0.5, 5 };
         { const float means[3][2] = {{0, 0}, {0, 0}, {0, 0}}; const float weights[3] = {0, 0, 0}; check_filter(); }
 
         { const float p[2] = {1, 2}; assert(f.insert(p) == true); }
@@ -1318,6 +1318,12 @@ int main() {
 
         { const float p[2] = {-4.1, 1.41}; assert(f.insert(p) == false); }
         { const float means[3][2] = {{0, 0}, {-3.2, 2.1}, {-4.033333, 1.4033333}}; const float weights[3] = {0, 3, 3}; check_filter(); }
+
+        { const float p[2] = {-3, 2}; assert(f.insert(p) == false); }
+        { const float means[3][2] = {{0, 0}, {-4.033333, 1.4033333}, {-3.15, 2.075}}; const float weights[3] = {0, 3, 4}; check_filter(); }
+
+        { const float p[2] = {-3.59, 1.74}; assert(f.insert(p) == false); }
+        { const float means[3][2] = {{0, 0}, {0, 0}, {-3.53624875, 1.78125}}; const float weights[3] = {0, 0, 5}; check_filter(); }
     } CATCH({
         std::cout << "!!!! filter error: " << x.what() << '\n';
         throw;
