@@ -1265,22 +1265,22 @@ int main() {
         Tensor<f32, 1> embed = inference(sig_prep);
         assert(embed.dim<0>() == 16);
 
-        assert(std::abs(embed( 0) - +0.82717645) < 0.0775);
-        assert(std::abs(embed( 1) - +0.00781601) < 0.0775);
-        assert(std::abs(embed( 2) - -0.00244270) < 0.0775);
-        assert(std::abs(embed( 3) - -0.01425906) < 0.0775);
-        assert(std::abs(embed( 4) - +0.01407748) < 0.0775);
-        assert(std::abs(embed( 5) - -0.01172065) < 0.0775);
-        assert(std::abs(embed( 6) - -0.06960130) < 0.0775);
-        assert(std::abs(embed( 7) - -0.05343427) < 0.0775);
-        assert(std::abs(embed( 8) - -0.07090234) < 0.0775);
-        assert(std::abs(embed( 9) - +0.03135452) < 0.0775);
-        assert(std::abs(embed(10) - +0.39236391) < 0.0775);
-        assert(std::abs(embed(11) - -0.04881577) < 0.0775);
-        assert(std::abs(embed(12) - +0.01141034) < 0.0775);
-        assert(std::abs(embed(13) - -0.04412477) < 0.0775);
-        assert(std::abs(embed(14) - -0.04621476) < 0.0775);
-        assert(std::abs(embed(15) - -0.59525925) < 0.0775);
+        assert(std::abs(embed( 0) - +0.42356920) < 0.028);
+        assert(std::abs(embed( 1) - -0.00588988) < 0.028);
+        assert(std::abs(embed( 2) - +0.00338129) < 0.028);
+        assert(std::abs(embed( 3) - +0.01364951) < 0.028);
+        assert(std::abs(embed( 4) - +0.02756233) < 0.028);
+        assert(std::abs(embed( 5) - -0.00364426) < 0.028);
+        assert(std::abs(embed( 6) - +0.03169870) < 0.028);
+        assert(std::abs(embed( 7) - -0.05496707) < 0.028);
+        assert(std::abs(embed( 8) - +0.02420937) < 0.028);
+        assert(std::abs(embed( 9) - +0.01244469) < 0.028);
+        assert(std::abs(embed(10) - +0.05004972) < 0.028);
+        assert(std::abs(embed(11) - -0.01031907) < 0.028);
+        assert(std::abs(embed(12) - -0.79708958) < 0.028);
+        assert(std::abs(embed(13) - +0.03444605) < 0.028);
+        assert(std::abs(embed(14) - -0.02109118) < 0.028);
+        assert(std::abs(embed(15) - +0.04015120) < 0.028);
     } CATCH({
         std::cout << "!!!! inference error: " << x.what() << '\n';
         throw;

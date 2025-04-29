@@ -4,7 +4,7 @@
 #include "./model.h"
 #include "./tensor.h"
 
-constexpr u32 tensor_arena_size = 46 * 1024;
+constexpr u32 tensor_arena_size = 27 * 1024;
 u8 tensor_arena[tensor_arena_size];
 
 Tensor<f32, 1> inference(const Tensor<f32, 2> &x) {
